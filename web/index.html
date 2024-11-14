@@ -160,7 +160,6 @@
       </block>
       <block type="controls_whileUntil" class="racer"></block>
       <block type="controls_flow_statements" class="racer"></block>
-      <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="racer"></category> -->
     </category>
     <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="racer">
       <block type="logic_compare"></block>
@@ -506,7 +505,7 @@
       </block>
       <block type="controls_whileUntil" class="ezDisplay"></block>
       <block type="controls_flow_statements" class="ezDisplay"></block>
-      <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category> -->
+      <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category>
     </category>
     <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="ezDisplay">
       <block type="logic_compare"></block>
@@ -686,7 +685,10 @@
       <block type="SSD1306_framebuffer_switch_displayed"></block>
       <block type="SSD1306_framebuffer_switch_both"></block>
     </category>
-    <category name="%{BKY_CAT_PROCEDURES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category>
+    <category name="%{BKY_CAT_PROCEDURES}" colour="60" custom="PROCEDURE" class="ezDisplay">
+      <block type="procedures_defnoreturn"></block>
+      <block type="procedures_defreturn"></block>
+    </category>
   </xml>
 
   <div id="notSupported" class="modal">

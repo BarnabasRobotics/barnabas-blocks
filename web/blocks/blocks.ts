@@ -4,6 +4,7 @@ import { BlockDefinition } from "blockly/core/blocks"
 import * as actuate from "./actuate"
 import * as controlFlow from "./controlFlow"
 import * as ezDisplay from "./ezDisplay"
+import * as procedures from "./procedures"
 import * as sense from "./sense"
 import * as serial from "./serial"
 
@@ -30,6 +31,7 @@ export {
     actuate,
     controlFlow,
     ezDisplay,
+    procedures,
     sense,
     serial,
 }
@@ -39,5 +41,6 @@ export const blocks: { [key: string]: BlockDefinition } = Object.assign({},
     controlFlow.blocks,
     sense.blocks,
     ezDisplay.blocks,
+    procedures.blocks,
     serial.blocks,
 )
