@@ -696,10 +696,15 @@
         <h2>Can not access your <span id="board">...</span></h2>
       </div>
       <div class="modal-body">
-        Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you're
-        running MS Edge or Chrome 78 or later and have enabled the
-        <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
-        <code>chrome://flags</code>
+        Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you:
+        <ul>
+          <li>Use MS Edge, Chrome 78, or Brave 1.69 or later</li>
+          <li>Enable the <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
+            <a href="about://flags/#enable-experimental-web-platform-features"><code>about://flags/
+            </code></a>
+          </li>
+          <li>Use HTTPS</li>
+        </ul>
       </div>
       <div class="modal-footer" style="text-align: right;">
         <a href="http://" class="" target="_blank" rel="noopener noreferrer">How to enable Experimental
