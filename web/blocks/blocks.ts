@@ -41,6 +41,6 @@ export const blocks: { [key: string]: BlockDefinition } = Object.assign({},
     controlFlow.blocks,
     sense.blocks,
     ezDisplay.blocks,
-    procedures.blocks,
+    // procedures.blocks,
     serial.blocks,
 )

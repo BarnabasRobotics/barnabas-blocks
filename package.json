@@ -26,6 +26,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@blockly/block-shareable-procedures": "^5.0.12",
     "@blockly/plugin-typed-variable-modal": "^8.0.9",
     "ace-builds": "^1.36.4",
     "avrgirl-arduino": "^5.0.1",
