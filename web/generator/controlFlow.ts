@@ -60,4 +60,49 @@ ${body}}
         // only add space if value is present
         return `return${val.length > 0 ? " " : ""}${val};\n`
     }
+
+    generator.forBlock["controls_if"] = function (block, generator) {
+        // If/elseif/else condition.
+        let n = 0
+        let code = ""
+        if (generator.STATEMENT_PREFIX) {
+            // Automatic prefix insertion is switched off for this block.  Add manually.
+            code += generator.injectId(generator.STATEMENT_PREFIX, block)
+        }
+        do {
+            const conditionCode
+              = generator.valueToCode(block, "IF" + n, Order.ORDER_NONE) || "false"
+            let branchCode = generator.statementToCode(block, "DO" + n)
+            if (generator.STATEMENT_SUFFIX) {
+                branchCode
+                  = generator.prefixLines(
+                        generator.injectId(generator.STATEMENT_SUFFIX, block),
+                        generator.INDENT,
+                    ) + branchCode
+            }
+            code
+              += (n > 0 ? " else " : "")
+              + "if ("
+              + conditionCode
+              + ") {\n"
+              + branchCode
+              + "}"
+            n++
+        } while (block.getInput("IF" + n))
+
+        if (block.getInput("ELSE") || generator.STATEMENT_SUFFIX) {
+            let branchCode = block.getInput("ELSE")
+                ? generator.statementToCode(block, "ELSE")
+                : ""
+            if (generator.STATEMENT_SUFFIX) {
+                branchCode
+                  = generator.prefixLines(
+                        generator.injectId(generator.STATEMENT_SUFFIX, block),
+                        generator.INDENT,
+                    ) + branchCode
+            }
+            code += " else {\n" + branchCode + "}"
+        }
+        return code + "\n"
+    }
 }
