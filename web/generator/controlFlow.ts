@@ -34,7 +34,7 @@ export default function populate(generator: ArduinoGenerator) {
     }
 
     generator.forBlock["controls_delay"] = function (block, generator) {
-        const millis = Math.round(Number(generator.valueToCode(block, "DELAY_TIME", Order.ORDER_ATOMIC) || "1000"))
+        const millis = generator.valueToCode(block, "DELAY_TIME", Order.ORDER_ATOMIC) || "1000"
         return `delay(${millis});\n`
     }
 
