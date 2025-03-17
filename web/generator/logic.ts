@@ -1,26 +1,6 @@
 import { ArduinoGenerator, Order } from "./arduinoGenerator"
 
 export default function populate(generator: ArduinoGenerator) {
-    generator.forBlock["controls_if"] = function (block, generator) {
-        let bodyNum = 0
-
-        let cond = generator.valueToCode(block, `IF${bodyNum}`, Order.ORDER_NONE) || "false"
-        let branch = generator.statementToCode(block, `DO${bodyNum}`)
-        let code = `if (${cond}) {\n${branch}}`
-
-        const blockProps = block as unknown as Record<string, number>
-        for (bodyNum = 1; bodyNum <= blockProps.elseifCount_; bodyNum++) {
-            cond = generator.valueToCode(block, `IF${bodyNum}`, Order.ORDER_NONE) || "false"
-            branch = generator.statementToCode(block, `DO${bodyNum}`)
-            code += ` else if (${cond}) {\n${branch}}`
-        }
-        if (blockProps.generator) {
-            branch = generator.statementToCode(block, "ELSE")
-            code += ` else {\n${branch}}`
-        }
-        return code + "\n"
-    }
-
     generator.forBlock["logic_compare"] = function (block, generator) {
         const op = {
             EQ: "==",

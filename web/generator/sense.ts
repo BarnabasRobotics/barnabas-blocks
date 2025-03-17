@@ -60,4 +60,14 @@ ${generator.INDENT}return ((double) pulseIn(${echo}, HIGH)) / 29979.2458;
 
         return ["ultrasonic()", Order.ORDER_FUNCTION_CALL]
     }
+
+    generator.forBlock["analog_read"] = function (block, generator) {
+        return [`analogRead(${generator.valueToCode(block, "PIN", Order.ORDER_COMMA)})`, Order.ORDER_ATOMIC]
+    }
+
+    generator.forBlock["analog_pin"] = function (block) {
+        const pin = block.getFieldValue("PIN") || "A0"
+
+        return [`${pin}`, Order.ORDER_FUNCTION_CALL]
+    }
 }
