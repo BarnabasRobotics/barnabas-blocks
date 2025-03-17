@@ -1,13 +1,16 @@
-import { ObservableProcedureModel } from "@blockly/block-shareable-procedures"
 import * as Blockly from "blockly"
 import {
+    BlockSvg,
     Connection,
     Events,
     FieldCheckbox,
     fieldRegistry,
+    FieldTextInput,
     Procedures,
-    VariableModel, Variables,
-    Workspace, Xml,
+    VariableModel,
+    Variables,
+    Workspace,
+    Xml,
 } from "blockly"
 import { Block } from "blockly/core"
 import * as xmlUtils from "./xml"
@@ -62,8 +65,17 @@ type ProcedureBlock = Block & ProcedureMixin
 type ProcedureMixinType = typeof PROCEDURE_DEF_COMMON
 
 type ContainerBlock = Block & ContainerMixin
-interface ContainerMixin extends ContainerMixinType {}
+
+interface ContainerMixin extends ContainerMixinType {
+}
+
 type ContainerMixinType = typeof PROCEDURES_MUTATORCONTAINER
+
+/** Extra state for serialising procedure blocks. */
+type ProcedureExtraState = {
+    params?: Array<{ name: string, id: string }>
+    hasStatements: boolean
+}
 
 const PROCEDURES_MUTATORCONTAINER = {
     /**
@@ -110,7 +122,8 @@ const PROCEDURE_DEF_COMMON = {
             return
         }
         if (hasStatements) {
-            this.appendStatementInput("STACK").appendField("PROCEDURES_DEFNORETURN_DO",
+            this.appendStatementInput("STACK").appendField(
+                "PROCEDURES_DEFNORETURN_DO",
             )
             if (this.getInput("RETURN")) {
                 this.moveInputBefore("STACK", "RETURN")
@@ -120,7 +133,6 @@ const PROCEDURE_DEF_COMMON = {
         }
         this.hasStatements_ = hasStatements
     },
-
     /**
      * Update the display of parameters for this procedure definition block.
      *
@@ -130,7 +142,8 @@ const PROCEDURE_DEF_COMMON = {
         // Merge the arguments into a human-readable list.
         let paramString = ""
         if (this.arguments_.length) {
-            paramString = `PROCEDURES_BEFORE_PARAMS ${this.arguments_.join(", ")}`
+            paramString
+            = "PROCEDURES_BEFORE_PARAMS" + " " + this.arguments_.join(", ")
         }
         // The params field is deterministic based on the mutation,
         // no need to fire a change event.
@@ -141,7 +154,6 @@ const PROCEDURE_DEF_COMMON = {
             Events.enable()
         }
     },
-
     /**
      * Create XML to represent the argument inputs.
      * Backwards compatible serialization implementation.
@@ -213,6 +225,310 @@ const PROCEDURE_DEF_COMMON = {
         // Show or hide the statement input.
         this.setStatements_(xmlElement.getAttribute("statements") !== "false")
     },
+    /**
+   * Returns the state of this block as a JSON serializable object.
+   *
+   * @returns The state of this block, eg the parameters and statements.
+   */
+    saveExtraState: function (this: ProcedureBlock): ProcedureExtraState | null {
+        if (!this.argumentVarModels_.length && this.hasStatements_) {
+            return null
+        }
+        const state = Object.create(null)
+        if (this.argumentVarModels_.length) {
+            state["params"] = []
+            for (let i = 0; i < this.argumentVarModels_.length; i++) {
+                state["params"].push({
+                    // We don't need to serialize the name, but just in case we decide
+                    // to separate params from variables.
+                    name: this.argumentVarModels_[i].name,
+                    id: this.argumentVarModels_[i].getId(),
+                })
+            }
+        }
+        if (!this.hasStatements_) {
+            state["hasStatements"] = false
+        }
+        return state
+    },
+    /**
+   * Applies the given state to this block.
+   *
+   * @param state The state to apply to this block, eg the parameters
+   *     and statements.
+   */
+    loadExtraState: function (this: ProcedureBlock, state: ProcedureExtraState) {
+        this.arguments_ = []
+        this.argumentVarModels_ = []
+        if (state["params"]) {
+            for (let i = 0; i < state["params"].length; i++) {
+                const param = state["params"][i]
+                const variable = Variables.getOrCreateVariablePackage(
+                    this.workspace,
+                    param["id"],
+                    param["name"],
+                    "",
+                )
+                this.arguments_.push(variable.name)
+                this.argumentVarModels_.push(variable)
+            }
+        }
+        this.updateParams_()
+        Procedures.mutateCallers(this)
+        this.setStatements_(state["hasStatements"] !== false)
+    },
+    /**
+   * Populate the mutator's dialog with this block's components.
+   *
+   * @param  workspace Mutator's workspace.
+   * @returns Root block in mutator.
+   */
+    decompose: function (
+        this: ProcedureBlock,
+        workspace: Workspace,
+    ): ContainerBlock {
+    /*
+     * Creates the following XML:
+     * <block type="procedures_mutatorcontainer">
+     *   <statement name="STACK">
+     *     <block type="procedures_mutatorarg">
+     *       <field name="NAME">arg1_name</field>
+     *       <next>etc...</next>
+     *     </block>
+     *   </statement>
+     * </block>
+     */
+
+        const containerBlockNode = xmlUtils.createElement("block")
+        containerBlockNode.setAttribute("type", "procedures_mutatorcontainer")
+        const statementNode = xmlUtils.createElement("statement")
+        statementNode.setAttribute("name", "STACK")
+        containerBlockNode.appendChild(statementNode)
+
+        let node = statementNode
+        for (let i = 0; i < this.arguments_.length; i++) {
+            const argBlockNode = xmlUtils.createElement("block")
+            argBlockNode.setAttribute("type", "procedures_mutatorarg")
+            const fieldNode = xmlUtils.createElement("field")
+            fieldNode.setAttribute("name", "NAME")
+            const argumentName = xmlUtils.createTextNode(this.arguments_[i])
+            fieldNode.appendChild(argumentName)
+            argBlockNode.appendChild(fieldNode)
+            const nextNode = xmlUtils.createElement("next")
+            argBlockNode.appendChild(nextNode)
+
+            node.appendChild(argBlockNode)
+            node = nextNode
+        }
+
+        const containerBlock = Xml.domToBlock(
+            containerBlockNode,
+            workspace,
+        ) as ContainerBlock
+
+        if (this.type === "procedures_defreturn") {
+            containerBlock.setFieldValue(this.hasStatements_, "STATEMENTS")
+        } else {
+            containerBlock.removeInput("STATEMENT_INPUT")
+        }
+
+        // Initialize procedure's callers with blank IDs.
+        Procedures.mutateCallers(this)
+        return containerBlock
+    },
+    /**
+   * Reconfigure this block based on the mutator dialog's components.
+   *
+   * @param containerBlock Root block in mutator.
+   */
+    compose: function (this: ProcedureBlock, containerBlock: ContainerBlock) {
+    // Parameter list.
+        this.arguments_ = []
+        this.paramIds_ = []
+        this.argumentVarModels_ = []
+        let paramBlock = containerBlock.getInputTargetBlock("STACK")
+        while (paramBlock && !paramBlock.isInsertionMarker()) {
+            const varName = paramBlock.getFieldValue("NAME")
+            this.arguments_.push(varName)
+            const variable = this.workspace.getVariable(varName, "")!
+            this.argumentVarModels_.push(variable)
+
+            this.paramIds_.push(paramBlock.id)
+            paramBlock
+        = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock()
+        }
+        this.updateParams_()
+        Procedures.mutateCallers(this)
+
+        // Show/hide the statement input.
+        let hasStatements = containerBlock.getFieldValue("STATEMENTS")
+        if (hasStatements !== null) {
+            hasStatements = hasStatements === "TRUE"
+            if (this.hasStatements_ !== hasStatements) {
+                if (hasStatements) {
+                    this.setStatements_(true)
+                    // Restore the stack, if one was saved.
+                    this.statementConnection_?.reconnect(this, "STACK")
+                    this.statementConnection_ = null
+                } else {
+                    // Save the stack, then disconnect it.
+                    const stackConnection = this.getInput("STACK")!.connection
+                    this.statementConnection_ = stackConnection!.targetConnection
+                    if (this.statementConnection_) {
+                        const stackBlock = stackConnection!.targetBlock()!
+                        stackBlock.unplug()
+                        stackBlock.bumpNeighbours()
+                    }
+                    this.setStatements_(false)
+                }
+            }
+        }
+    },
+    // /**
+    //  * Return all variables referenced by this block.
+    //  *
+    //  * @returns List of variable names.
+    //  */
+    // getVars: function (this: ProcedureBlock): string[] {
+    //     return this.arguments_
+    // },
+    // /**
+    //  * Return all variables referenced by this block.
+    //  *
+    //  * @returns List of variable models.
+    //  */
+    // getVarModels: function (this: ProcedureBlock): VariableModel[] {
+    //     return this.argumentVarModels_
+    // },
+    // /**
+    //  * Notification that a variable is renaming.
+    //  * If the ID matches one of this block's variables, rename it.
+    //  *
+    //  * @param oldId ID of variable to rename.
+    //  * @param newId ID of new variable.  May be the same as oldId, but
+    //  *     with an updated name.  Guaranteed to be the same type as the
+    //  *     old variable.
+    //  */
+    // renameVarById: function (
+    //     this: ProcedureBlock & BlockSvg,
+    //     oldId: string,
+    //     newId: string,
+    // ) {
+    //     const oldVariable = this.workspace.getVariableById(oldId)!
+    //     if (oldVariable.type !== "") {
+    //         // Procedure arguments always have the empty type.
+    //         return
+    //     }
+    //     const oldName = oldVariable.name
+    //     const newVar = this.workspace.getVariableById(newId)!
+    //
+    //     let change = false
+    //     for (let i = 0; i < this.argumentVarModels_.length; i++) {
+    //         if (this.argumentVarModels_[i].getId() === oldId) {
+    //             this.arguments_[i] = newVar.name
+    //             this.argumentVarModels_[i] = newVar
+    //             change = true
+    //         }
+    //     }
+    //     if (change) {
+    //         this.displayRenamedVar_(oldName, newVar.name)
+    //         Procedures.mutateCallers(this)
+    //     }
+    // },
+    // /**
+    //  * Notification that a variable is renaming but keeping the same ID.  If the
+    //  * variable is in use on this block, rerender to show the new name.
+    //  *
+    //  * @param variable The variable being renamed.
+    //  */
+    // updateVarName: function (
+    //     this: ProcedureBlock & BlockSvg,
+    //     variable: VariableModel,
+    // ) {
+    //     const newName = variable.name
+    //     let change = false
+    //     let oldName
+    //     for (let i = 0; i < this.argumentVarModels_.length; i++) {
+    //         if (this.argumentVarModels_[i].getId() === variable.getId()) {
+    //             oldName = this.arguments_[i]
+    //             this.arguments_[i] = newName
+    //             change = true
+    //         }
+    //     }
+    //     if (change) {
+    //         this.displayRenamedVar_(oldName as string, newName)
+    //         Procedures.mutateCallers(this)
+    //     }
+    // },
+    // /**
+    //  * Update the display to reflect a newly renamed argument.
+    //  *
+    //  * @internal
+    //  * @param oldName The old display name of the argument.
+    //  * @param newName The new display name of the argument.
+    //  */
+    // displayRenamedVar_: function (
+    //     this: ProcedureBlock & BlockSvg,
+    //     oldName: string,
+    //     newName: string,
+    // ) {
+    //     this.updateParams_()
+    //     // Update the mutator's variables if the mutator is open.
+    //     const mutator = this.getIcon(Mutator.TYPE)
+    //     if (mutator && mutator.bubbleIsVisible()) {
+    //         const blocks = mutator.getWorkspace()!.getAllBlocks(false)
+    //         for (let i = 0, block; (block = blocks[i]); i++) {
+    //             if (
+    //                 block.type === "procedures_mutatorarg"
+    //                 && Names.equals(oldName, block.getFieldValue("NAME"))
+    //             ) {
+    //                 block.setFieldValue(newName, "NAME")
+    //             }
+    //         }
+    //     }
+    // },
+    // /**
+    //  * Add custom menu options to this block's context menu.
+    //  *
+    //  * @param options List of menu options to add to.
+    //  */
+    // customContextMenu: function (
+    //     this: ProcedureBlock,
+    //     options: Array<ContextMenuOption | LegacyContextMenuOption>,
+    // ) {
+    //     if (this.isInFlyout) {
+    //         return
+    //     }
+    //     // Add option to create caller.
+    //     const name = this.getFieldValue("NAME")
+    //     const callProcedureBlockState = {
+    //         type: (this as AnyDuringMigration).callType_,
+    //         extraState: { name: name, params: this.arguments_ },
+    //     }
+    //     options.push({
+    //         enabled: true,
+    //         text: Msg["PROCEDURES_CREATE_DO"].replace("%1", name),
+    //         callback: ContextMenu.callbackFactory(this, callProcedureBlockState),
+    //     })
+    //
+    //     // Add options to create getters for each parameter.
+    //     if (!this.isCollapsed()) {
+    //         for (let i = 0; i < this.argumentVarModels_.length; i++) {
+    //             const argVar = this.argumentVarModels_[i]
+    //             const getVarBlockState = {
+    //                 type: "variables_get",
+    //                 fields: {
+    //                     VAR: { name: argVar.name, id: argVar.getId(), type: argVar.type },
+    //                 },
+    //             }
+    //             options.push({
+    //                 enabled: true,
+    //                 text: Msg["VARIABLES_SET_CREATE_GET"].replace("%1", argVar.name),
+    //                 callback: ContextMenu.callbackFactory(this, getVarBlockState),
+    //             })
+    //         }
+    //     }
+    // },
 }
 
 const PROCEDURES_MUTATORARGUMENT = {
@@ -343,147 +659,36 @@ Blockly.Blocks["arguments_container"] = {
     },
 }
 
-type FnBlock = Blockly.Block & { model?: any, arguments_?: any } & Blockly.BlockSvg
-
 Blockly.Blocks["procedures_defnoreturn"] = {
     ...PROCEDURE_DEF_COMMON,
-    init: function (this: FnBlock) {
-        const initName = Blockly.Procedures.findLegalName("", this)
-
-        this.model = new ObservableProcedureModel(this.workspace, "default name")
-        this.workspace.getProcedureMap().add(this.model)
-        // etc...
+    init: function (this: ProcedureBlock & BlockSvg) {
+        const initName = Procedures.findLegalName("", this)
+        const nameField = fieldRegistry.fromJson({
+            type: "field_input",
+            text: initName,
+        }) as FieldTextInput
+        nameField!.setValidator(Procedures.rename)
+        nameField.setSpellcheck(false)
         this.appendDummyInput()
-            .appendField("fuf")
-            .appendField(Blockly.fieldRegistry.fromJson({
-                type: "field_input",
-                text: initName,
-            }) as Blockly.FieldTextInput, "NAME")
+            .appendField("PROCEDURES_DEFNORETURN_TITLE")
+            .appendField(nameField, "NAME")
             .appendField("", "PARAMS")
-        this.appendStatementInput("STACK")
-            .setCheck(null)
-            .appendField("do")
-        this.setColour(230)
-        this.setTooltip("tooltip")
-        this.setHelpUrl("help")
-        this.arguments_ = []
         this.setMutator(new Blockly.icons.MutatorIcon(["procedures_mutatorarg"], this))
-    },
-
-    destroy: function () {
-        // (Optionally) Destroy the model when the definition block is deleted.
-
-        // Insertion markers reference the model of the original block.
-        if (this.isInsertionMarker()) return
-        this.workspace.getProcedureMap().delete(this.model.getId())
-    },
-
-    /**
-     * Populate the mutator's dialog with this block's components.
-     *
-     * @param  workspace Mutator's workspace.
-     * @returns Root block in mutator.
-     */
-    decompose: function (
-        this: ProcedureBlock,
-        workspace: Workspace,
-    ): ContainerBlock {
-        /*
-         * Creates the following XML:
-         * <block type="procedures_mutatorcontainer">
-         *   <statement name="STACK">
-         *     <block type="procedures_mutatorarg">
-         *       <field name="NAME">arg1_name</field>
-         *       <next>etc...</next>
-         *     </block>
-         *   </statement>
-         * </block>
-         */
-
-        const containerBlockNode = xmlUtils.createElement("block")
-        containerBlockNode.setAttribute("type", "procedures_mutatorcontainer")
-        const statementNode = xmlUtils.createElement("statement")
-        statementNode.setAttribute("name", "STACK")
-        containerBlockNode.appendChild(statementNode)
-
-        let node = statementNode
-        for (let i = 0; i < this.arguments_.length; i++) {
-            const argBlockNode = xmlUtils.createElement("block")
-            argBlockNode.setAttribute("type", "procedures_mutatorarg")
-            const fieldNode = xmlUtils.createElement("field")
-            fieldNode.setAttribute("name", "NAME")
-            const argumentName = xmlUtils.createTextNode(this.arguments_[i])
-            fieldNode.appendChild(argumentName)
-            argBlockNode.appendChild(fieldNode)
-            const nextNode = xmlUtils.createElement("next")
-            argBlockNode.appendChild(nextNode)
-
-            node.appendChild(argBlockNode)
-            node = nextNode
+        if (
+            (this.workspace.options.comments
+                || (this.workspace.options.parentWorkspace
+                    && this.workspace.options.parentWorkspace.options.comments))
+                && "PROCEDURES_DEFNORETURN_COMMENT"
+        ) {
+            this.setCommentText("PROCEDURES_DEFNORETURN_COMMENT")
         }
-
-        const containerBlock = Xml.domToBlock(
-            containerBlockNode,
-            workspace,
-        ) as ContainerBlock
-
-        if (this.type === "procedures_defreturn") {
-            containerBlock.setFieldValue(this.hasStatements_, "STATEMENTS")
-        } else {
-            containerBlock.removeInput("STATEMENT_INPUT")
-        }
-
-        // Initialize procedure's callers with blank IDs.
-        Procedures.mutateCallers(this)
-        return containerBlock
-    },
-    /**
-     * Reconfigure this block based on the mutator dialog's components.
-     *
-     * @param containerBlock Root block in mutator.
-     */
-    compose: function (this: ProcedureBlock, containerBlock: ContainerBlock) {
-        // Parameter list.
+        this.setStyle("procedure_blocks")
+        this.setTooltip("PROCEDURES_DEFNORETURN_TOOLTIP")
+        this.setHelpUrl("PROCEDURES_DEFNORETURN_HELPURL")
         this.arguments_ = []
-        this.paramIds_ = []
         this.argumentVarModels_ = []
-        let paramBlock = containerBlock.getInputTargetBlock("STACK")
-        while (paramBlock && !paramBlock.isInsertionMarker()) {
-            const varName = paramBlock.getFieldValue("NAME")
-            this.arguments_.push(varName)
-            const variable = this.workspace.getVariable(varName, "")!
-            this.argumentVarModels_.push(variable)
-
-            this.paramIds_.push(paramBlock.id)
-            paramBlock
-              = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock()
-        }
-        this.updateParams_()
-        Procedures.mutateCallers(this)
-
-        // Show/hide the statement input.
-        let hasStatements = containerBlock.getFieldValue("STATEMENTS")
-        if (hasStatements !== null) {
-            hasStatements = hasStatements === "TRUE"
-            if (this.hasStatements_ !== hasStatements) {
-                if (hasStatements) {
-                    this.setStatements_(true)
-                    // Restore the stack, if one was saved.
-                    this.statementConnection_?.reconnect(this, "STACK")
-                    this.statementConnection_ = null
-                } else {
-                    // Save the stack, then disconnect it.
-                    const stackConnection = this.getInput("STACK")!.connection
-                    this.statementConnection_ = stackConnection!.targetConnection
-                    if (this.statementConnection_) {
-                        const stackBlock = stackConnection!.targetBlock()!
-                        stackBlock.unplug()
-                        stackBlock.bumpNeighbours()
-                    }
-                    this.setStatements_(false)
-                }
-            }
-        }
+        this.setStatements_(true)
+        this.statementConnection_ = null
     },
 
     /**
@@ -498,31 +703,6 @@ Blockly.Blocks["procedures_defnoreturn"] = {
         return [this.getFieldValue("NAME"), this.arguments_, false]
     },
     callType_: "procedures_callnoreturn",
-
-    getProcedureModel() {
-        return this.model
-    },
-
-    isProcedureDef() {
-        return true
-    },
-
-    getVarModels() {
-        // If your procedure references variables
-        // then you should return those models here.
-        return [] as Blockly.VariableModel[]
-    },
-
-    doProcedureUpdate() {
-        this.setFieldValue(this.model.getName(), "NAME")
-        this.setFieldValue(
-            (this.model as ObservableProcedureModel).getParameters()
-                .map(p => p.getName())
-                .join(","),
-            "PARAMS")
-        this.setFieldValue(
-            this.model.getReturnTypes().join(","), "RETURN")
-    },
 }
 
 Blockly.Blocks["procedures_callnoreturn"] = {
