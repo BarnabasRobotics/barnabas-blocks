@@ -32,7 +32,7 @@ export default {
             import: "./web/img2hex.js",
         },
     },
-    devtool: "inline-source-map",
+    devtool: "eval-source-map",
     mode: "production",
     module: {
         rules: [
