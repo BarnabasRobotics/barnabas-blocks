@@ -337,8 +337,13 @@
     <category name="%{BKY_CAT_SENSORS}" categorystyle="sensors" class="racer ">
       <block type="logic_compare" inputsInline="false">
         <value name="A">
-          <block type="boolean_button"></block>
-        </value>
+          <block type="boolean_button">
+            <value name="PIN">
+              <block type="math_number">
+                <field name="NUM">2</field>
+              </block>
+              <value name="PIN">
+          </block>        </value>
         <value name="B">
           <block type="boolean_pressed"></block>
         </value>
@@ -591,7 +596,11 @@
       <block type="logic_compare" inputsInline="false">
         <value name="A">
           <block type="boolean_button">
-            <field name="PIN">4</field>
+            <value name="PIN">
+            <block type="math_number">
+              <field name="NUM">2</field>
+            </block>
+            <value name="PIN">
           </block>
         </value>
         <value name="B">
