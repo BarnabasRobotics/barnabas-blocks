@@ -4,6 +4,7 @@ import {
     Connection,
     Events,
     FieldCheckbox,
+    FieldDropdown,
     fieldRegistry,
     FieldTextInput,
     Procedures,
@@ -73,7 +74,7 @@ type ContainerMixinType = typeof PROCEDURES_MUTATORCONTAINER
 
 /** Extra state for serialising procedure blocks. */
 type ProcedureExtraState = {
-    params?: Array<{ name: string, id: string }>
+    params?: Array<{ name: string, id: string, type: string }>
     hasStatements: boolean
 }
 
@@ -103,7 +104,7 @@ const PROCEDURES_MUTATORCONTAINER = {
 Blockly.Blocks["procedures_mutatorcontainer"] = PROCEDURES_MUTATORCONTAINER
 
 interface ProcedureMixin extends ProcedureMixinType {
-    arguments_: string[]
+    arguments_: [string, string][]
     argumentVarModels_: VariableModel[]
     callType_: string
     paramIds_: string[]
@@ -143,7 +144,7 @@ const PROCEDURE_DEF_COMMON = {
         let paramString = ""
         if (this.arguments_.length) {
             paramString
-            = "PROCEDURES_BEFORE_PARAMS" + " " + this.arguments_.join(", ")
+            = "PROCEDURES_BEFORE_PARAMS" + " " + this.arguments_.map(([n, _]) => n).join(", ")
         }
         // The params field is deterministic based on the mutation,
         // no need to fire a change event.
@@ -174,6 +175,7 @@ const PROCEDURE_DEF_COMMON = {
             const parameter = xmlUtils.createElement("arg")
             const argModel = this.argumentVarModels_[i]
             parameter.setAttribute("name", argModel.name)
+            parameter.setAttribute("type", argModel.type)
             parameter.setAttribute("varid", argModel.getId())
             if (opt_paramIds && this.paramIds_) {
                 parameter.setAttribute("paramId", this.paramIds_[i])
@@ -203,13 +205,16 @@ const PROCEDURE_DEF_COMMON = {
                 const varId
                   = childElement.getAttribute("varid")
                   || childElement.getAttribute("varId")
-                this.arguments_.push(varName)
+                const varType = childElement.getAttribute("type")!
+                this.arguments_.push([varName, varType])
                 const variable = Variables.getOrCreateVariablePackage(
                     this.workspace,
                     varId,
                     varName,
                     "",
+                    // varType,
                 )
+
                 if (variable !== null) {
                     this.argumentVarModels_.push(variable)
                 } else {
@@ -243,6 +248,7 @@ const PROCEDURE_DEF_COMMON = {
                     // to separate params from variables.
                     name: this.argumentVarModels_[i].name,
                     id: this.argumentVarModels_[i].getId(),
+                    // type: this.argumentVarModels_[i].type,
                 })
             }
         }
@@ -268,8 +274,9 @@ const PROCEDURE_DEF_COMMON = {
                     param["id"],
                     param["name"],
                     "",
+                    // param["type"],
                 )
-                this.arguments_.push(variable.name)
+                this.arguments_.push([variable.name, variable.type])
                 this.argumentVarModels_.push(variable)
             }
         }
@@ -311,9 +318,16 @@ const PROCEDURE_DEF_COMMON = {
             argBlockNode.setAttribute("type", "procedures_mutatorarg")
             const fieldNode = xmlUtils.createElement("field")
             fieldNode.setAttribute("name", "NAME")
-            const argumentName = xmlUtils.createTextNode(this.arguments_[i])
+            const argumentName = xmlUtils.createTextNode(this.arguments_[i][0])
             fieldNode.appendChild(argumentName)
             argBlockNode.appendChild(fieldNode)
+
+            const typeFieldNode = xmlUtils.createElement("field")
+            typeFieldNode.setAttribute("name", "TYPE")
+            const type = xmlUtils.createTextNode(this.arguments_[i][1])
+            typeFieldNode.appendChild(type)
+            argBlockNode.appendChild(typeFieldNode)
+
             const nextNode = xmlUtils.createElement("next")
             argBlockNode.appendChild(nextNode)
 
@@ -348,14 +362,15 @@ const PROCEDURE_DEF_COMMON = {
         this.argumentVarModels_ = []
         let paramBlock = containerBlock.getInputTargetBlock("STACK")
         while (paramBlock && !paramBlock.isInsertionMarker()) {
-            const varName = paramBlock.getFieldValue("NAME")
-            this.arguments_.push(varName)
+            const varName = paramBlock.getFieldValue("NAME") as string
+            const varType = paramBlock.getFieldValue("TYPE") as string
+            this.arguments_.push([varName, varType])
+            // const variable = this.workspace.getVariable(varName, varType)!
             const variable = this.workspace.getVariable(varName, "")!
             this.argumentVarModels_.push(variable)
 
             this.paramIds_.push(paramBlock.id)
-            paramBlock
-        = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock()
+            paramBlock = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock()
         }
         this.updateParams_()
         Procedures.mutateCallers(this)
@@ -550,6 +565,10 @@ const PROCEDURES_MUTATORARGUMENT = {
         this.appendDummyInput()
             .appendField("mutatorarg title")
             .appendField(field, "NAME")
+            .appendField(new FieldDropdown([
+                ["String", "String"],
+                ["Number", "Number"],
+            ]), "TYPE")
         this.setPreviousStatement(true)
         this.setNextStatement(true)
         this.setStyle("procedure_blocks")
@@ -648,16 +667,16 @@ const PROCEDURES_MUTATORARGUMENT = {
 }
 Blockly.Blocks["procedures_mutatorarg"] = PROCEDURES_MUTATORARGUMENT
 
-Blockly.Blocks["arguments_container"] = {
-    init: function (this: Blockly.Block) {
-        this.appendDummyInput()
-            .appendField("parameters")
-        this.appendStatementInput("STACK")
-        this.setColour("#f92f2f")
-        this.setTooltip("Add parameters to the function.")
-        this.contextMenu = false
-    },
-}
+// Blockly.Blocks["arguments_container"] = {
+//     init: function (this: Blockly.Block) {
+//         this.appendDummyInput()
+//             .appendField("parameters")
+//         this.appendStatementInput("STACK")
+//         this.setColour("#f92f2f")
+//         this.setTooltip("Add parameters to the function.")
+//         this.contextMenu = false
+//     },
+// }
 
 Blockly.Blocks["procedures_defnoreturn"] = {
     ...PROCEDURE_DEF_COMMON,
@@ -700,7 +719,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
      *     - that it DOES NOT have a return value.
      */
     getProcedureDef: function (this: ProcedureBlock): [string, string[], false] {
-        return [this.getFieldValue("NAME"), this.arguments_, false]
+        return [this.getFieldValue("NAME"), this.arguments_.map(([n, _]) => n), false]
     },
     callType_: "procedures_callnoreturn",
 }
