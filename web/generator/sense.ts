@@ -10,7 +10,7 @@ export default function populate(generator: ArduinoGenerator) {
         ]
     }
 
-    generator.forBlock["boolean_button"] = function (block, generator) {
+    generator.forBlock["boolean_button"] = generator.forBlock["digital_read"] = function (block, generator) {
         const pin = generator.valueToCode(block, "PIN", Order.ORDER_ATOMIC) || "2"
         generator.reservePin(block, pin, "input", "button")
         generator.addSetup(block, `button:${pin}`, `pinMode(${pin}, INPUT_PULLUP);`)

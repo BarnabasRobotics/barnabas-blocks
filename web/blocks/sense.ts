@@ -65,6 +65,23 @@ export const blocks = [
         helpUrl: "http://www.arduino.cc/playground/ComponentLib/servo",
     },
     {
+        type: "digital_read",
+        message0: "digitalRead pin# %1",
+        args0: [
+            {
+                type: "input_value",
+                name: "PIN",
+                value: 2,
+                min: 0,
+                max: 13,
+            },
+        ],
+        output: "Boolean",
+        colour: 180,
+        tooltip: "Read a pin as either HIGH or LOW.",
+        helpUrl: "https://docs.arduino.cc/language-reference/en/functions/digital-io/digitalread/",
+    },
+    {
         type: "sensors_button",
         message0: "BUTTON %1 pin# %2 status %3",
         args0: [
