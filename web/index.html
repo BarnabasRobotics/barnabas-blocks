@@ -12,35 +12,35 @@
 </head>
 
 <body>
-  <table width="100%" height="100%">
-    <tr id="titleRow">
-      <td class="pageTitle">
-        <img style="top: 6px; position: relative;" src="./images/barney.svg" alt="bbot" width="40px">
-        Barnabas&rlm; Blocks -
-        <span id="title">...</span>
-      </td>
-      <td class="farSide">
-        <select id="languageMenu" class="dropdown"></select>
-        <img src="./images/logo_built_on_knockout.svg" alt="built on blockly" height="36" />
-        Ver: 1.1.0
-      </td>
-    </tr>
-    <tr id="buttonRow">
-      <td>
-        <button id="newButton" class="" title="new">
-          NEW
-        </button>
-        <button id="loadButton" class="" title="load">
-          LOAD
-        </button>
-        <input type="file" id="load" style="display: none;">
-        <button id="saveButton" class="" title="save">
-          SAVE
-        </button>
-        <button id="editButton" class="" title="edit">
-          TEXT
-        </button>
-        <span>
+<table width="100%" height="100%">
+  <tr id="titleRow">
+    <td class="pageTitle">
+      <img style="top: 6px; position: relative;" src="./images/barney.svg" alt="bbot" width="40px">
+      Barnabas&rlm; Blocks -
+      <span id="title">...</span>
+    </td>
+    <td class="farSide">
+      <select id="languageMenu" class="dropdown"></select>
+      <img src="./images/logo_built_on_knockout.svg" alt="built on blockly" height="36"/>
+      Ver: 1.1.0
+    </td>
+  </tr>
+  <tr id="buttonRow">
+    <td>
+      <button id="newButton" class="" title="new">
+        NEW
+      </button>
+      <button id="loadButton" class="" title="load">
+        LOAD
+      </button>
+      <input type="file" id="load" style="display: none;">
+      <button id="saveButton" class="" title="save">
+        SAVE
+      </button>
+      <button id="editButton" class="" title="edit">
+        TEXT
+      </button>
+      <span>
           <label for="boardSelect"> Select a board</label>
           <select id="boardSelect" class="">
             <option value="nano">Noggin</option>
@@ -49,7 +49,7 @@
             <option value="wemos">Wemos</option>
           </select>
         </span>
-        <span>
+      <span>
           <label for="lessonSelect"> Select a lesson</label>
           <select id="lessonSelect" class="">
             <option value="bot">Barnabas Bot</option>
@@ -57,682 +57,683 @@
             <option value="ezDisplay">ezDisplay</option>
           </select>
         </span>
-        <button id="linkButton" class="notext" title="...">
-          <img src='media/1x1.gif' class="link icon21">
-        </button>
-        <button id="runButton" class="" title="...">UPLOAD</button>
-        <button id="compileButton" class="" title="...">COMPILE</button>
-        <button id="img2hex" class="hide">IMAGE MAKER</button>
-      </td>
-      <!-- <td class="farSide">
+      <button id="linkButton" class="notext" title="...">
+        <img src='media/1x1.gif' class="link icon21">
+      </button>
+      <button id="runButton" class="" title="...">UPLOAD</button>
+      <button id="compileButton" class="" title="...">COMPILE</button>
+      <button id="img2hex" class="hide">IMAGE MAKER</button>
+    </td>
+    <!-- <td class="farSide">
 
-      </td> -->
-    </tr>
-    <tr>
-      <td colspan=2>
-        <table width="100%">
-          <tr id="tabRow" height="1em">
-            <td id="tab_blocks" class="tabon">...</td>
-            <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_arduino" class="taboff tab_collapse" style="display: none;">Arduino</td>
-            <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_editor" class="taboff tab_collapse">Editor</td>
-            <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_monitor" class="taboff tab_collapse">Monitor</td>
-            <td class="tabmin tab_collapse">&nbsp;</td>
-            <td id="tab_xml" class="taboff tab_collapse" style="display: none;">XML</td>
-            <td class="tabmin">&nbsp;</td>
-            <td id="tab_code" class="taboff">
-              <select id="code_menu"></select>
-            </td>
-            <td class="tabmax">
+    </td> -->
+  </tr>
+  <tr>
+    <td colspan=2>
+      <table width="100%">
+        <tr id="tabRow" height="1em">
+          <td id="tab_blocks" class="tabon">...</td>
+          <td class="tabmin tab_collapse">&nbsp;</td>
+          <td id="tab_arduino" class="taboff tab_collapse" style="display: none;">Arduino</td>
+          <td class="tabmin tab_collapse">&nbsp;</td>
+          <td id="tab_editor" class="taboff tab_collapse">Editor</td>
+          <td class="tabmin tab_collapse">&nbsp;</td>
+          <td id="tab_monitor" class="taboff tab_collapse">Monitor</td>
+          <td class="tabmin tab_collapse">&nbsp;</td>
+          <td id="tab_xml" class="taboff tab_collapse" style="display: none;">XML</td>
+          <td class="tabmin">&nbsp;</td>
+          <td id="tab_code" class="taboff">
+            <select id="code_menu"></select>
+          </td>
+          <td class="tabmax">
 
-              <button id="monitorButton" class="" title="Click to Connect the SERIAL MONITOR">
-                CONNECT
-              </button>
-              <button id="clearMonitor" class="" title="Click to Clear the SERIAL MONITOR">
-                CLEAR
-              </button>
-              <input type=text id="textToSend" class="" title="Enter text to send">
-              </input>
-              <button id="sendButton" class="" title="Send Text">
-                SEND
-              </button>
+            <button id="monitorButton" class="" title="Click to Connect the SERIAL MONITOR">
+              CONNECT
+            </button>
+            <button id="clearMonitor" class="" title="Click to Clear the SERIAL MONITOR">
+              CLEAR
+            </button>
+            <input type=text id="textToSend" class="" title="Enter text to send">
+            </input>
+            <button id="sendButton" class="" title="Send Text">
+              SEND
+            </button>
 
-              <button id="editorFontReset" class="" title="Reset text editor font size to default (12px)">
-                RESET ZOOM
-              </button>
+            <button id="editorFontReset" class="" title="Reset text editor font size to default (12px)">
+              RESET ZOOM
+            </button>
 
-              <button id="editorFontUp" class="" title="Increase text editor font size">
-                +
-              </button>
+            <button id="editorFontUp" class="" title="Increase text editor font size">
+              +
+            </button>
 
-              <button id="editorFontDown" class="" title="Decrease text editor font size">
-                -
-              </button>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td height="99%" colspan=2 id="content_area">
-      </td>
-    </tr>
-  </table>
-  <div id="content_blocks" class="content"></div>
-  <textarea id="content_arduino" class="content" readonly></textarea>
-  <textarea id="content_xml" class="content" wrap="off"></textarea>
-  <pre id="content_monitor" class="content lang-cpp"></pre>
-  <div id="content_editor" class="content"></div>
+            <button id="editorFontDown" class="" title="Decrease text editor font size">
+              -
+            </button>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td height="99%" colspan=2 id="content_area">
+    </td>
+  </tr>
+</table>
+<div id="content_blocks" class="content"></div>
+<textarea id="content_arduino" class="content" readonly></textarea>
+<textarea id="content_xml" class="content" wrap="off"></textarea>
+<pre id="content_monitor" class="content lang-cpp"></pre>
+<div id="content_editor" class="content"></div>
 
 
-  <xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
-    <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
-      <block type="controls_setup" class="racer"></block>
-      <block type="controls_wait">
-        <value name="DELAY_TIME">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_repeat_times">
-        <value name="TIMES">
-          <block type="math_number">
-            <field name="NUM">5</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_delay" class="racer">
-        <value name="DELAY_TIME">
-          <block type="math_number">
-            <field name="NUM">1000</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_if" colour="60"></block>
-      <block type="controls_if">
-        <mutation else="1"></mutation>
-      </block>
-      <block type="controls_if">
-        <mutation elseif="1" else="1"></mutation>
-      </block>
-      <block type="controls_whileUntil" class="racer"></block>
-      <block type="controls_flow_statements" class="racer"></block>
-      <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="racer"></category> -->
-    </category>
-    <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="racer">
-      <block type="logic_compare"></block>
-      <block type="logic_operation"></block>
-      <block type="logic_negate"></block>
-      <block type="logic_boolean"></block>
-      <block type="extra_logic"></block>
-      <block type="logic_null"></block>
-      <block type="logic_ternary"></block>
-    </category>
-    <category name="%{BKY_CAT_MATH}" categorystyle="math" class="racer">
-      <block type="math_arithmetic">
-        <value name="A">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="B">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_single">
-        <value name="NUM">
-          <block type="math_number">
-            <field name="NUM">9</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_trig">
-        <value name="NUM">
-          <block type="math_number">
-            <field name="NUM">45</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_constrain">
-        <value name="VALUE">
-          <block type="math_number">
-            <field name="NUM">50</field>
-          </block>
-        </value>
-        <value name="LOW">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="HIGH">
-          <block type="math_number">
-            <field name="NUM">100</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_random_int">
-        <value name="FROM">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TO">
-          <block type="math_number">
-            <field name="NUM">100</field>
-          </block>
-        </value>
-      </block>
-      <block type="operators_map">
-        <value name="OLD_LOW">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="OLD_HIGH">
-          <block type="math_number">
-            <field name="NUM">1023</field>
-          </block>
-        </value>
-        <value name="NEW_LOW">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="NEW_HIGH">
-          <block type="math_number">
-            <field name="NUM">255</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_VARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="CREATE_TYPED_VARIABLE" class="racer">
-    </category>
-    <category name="%{BKY_CAT_CONSTANTS}" categorystyle="constants" class="racer">
-      <block type="math_number">
-        <field name="NUM">123</field>
-      </block>
-      <block type="math_constant"></block>
-      <block type="led_builtin"></block>
-      <block type="boolean_onoff"></block>
-      <block type="text"></block>
-    </category>
-    <category name="%{BKY_CAT_COMM}" categorystyle="comm">
-      <block type="serial_println">
-        <value name="CONTENT">
-          <block type="text"></block>
-        </value>
-      </block>
-      <block type="serial_print">
-        <value name="CONTENT">
-          <block type="text"></block>
-        </value>
-      </block>
-      <block type="text"></block>
-      <block type="serial_read"></block>
-    </category>
-    <category name="%{BKY_CAT_LIGHTS}" categorystyle="lights">
-      <block type="lights_led">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="STATUS">
-          <block type="boolean_onoff"></block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_SOUNDS}" categorystyle="sounds">
-      <block type="sounds_tone">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="FREQ">
-          <block type="math_number">
-            <field name="NUM">440</field>
-          </block>
-        </value>
-      </block>
-      <block type="sounds_noTone">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_MOTORS}" categorystyle="motors">
-      <block type="motors_servo">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="DEGREE">
-          <block type="math_number">
-            <field name="NUM">180</field>
-          </block>
-        </value>
-      </block>
-      <block type="motors_dc">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="VALUE">
-          <block type="math_number">
-            <field name="NUM">255</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_SENSORS}" categorystyle="sensors" class="racer ">
-      <block type="logic_compare" inputsInline="false">
-        <value name="A">
-          <block type="boolean_button">
-            <value name="PIN">
-              <block type="math_number">
-                <field name="NUM">2</field>
-              </block>
-              <value name="PIN">
-          </block>        </value>
-        <value name="B">
-          <block type="boolean_pressed"></block>
-        </value>
-      </block>
-      <block type="analog_read">
-        <value name="PIN">
-          <block type="analog_pin">
-            <field name="PIN">A0</field>
-          </block>
-        </value>
-      </block>
-      <block type="sensors_sonic">
-        <value name="ECHO">
-          <block type="math_number">
-            <field name="NUM">3</field>
-          </block>
-        </value>
-        <value name="TRIGGER">
-          <block type="math_number">
-            <field name="NUM">4</field>
-          </block>
-        </value>
-      </block>
-      <block type="pulsein_return">
-        <value name="TYPE">
-          <block type="boolean_hilo">
-            <field name="BOOL">HIGH</field>
-          </block>
-        </value>
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TIMEOUT">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-      </block>
-      <block type="pulsein_discard">
-        <value name="TYPE">
-          <block type="boolean_hilo">
-            <field name="BOOL">HIGH</field>
-          </block>
-        </value>
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TIMEOUT">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="Subroutines" colour="60" custom="PROCEDURE" class="racer"></category>
-  </xml>
-
-  <xml xmlns="https://developers.google.com/blockly/xml" id="bot_toolbox" style="display: none">
-    <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
-      <block type="controls_loop"></block>
-      <block type="controls_wait">
-        <value name="DELAY_TIME">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_repeat_times">
-        <value name="TIMES">
-          <block type="math_number">
-            <field name="NUM">5</field>
-          </block>
-        </value>
-      </block>
+<xml xmlns="https://developers.google.com/blockly/xml" id="racer_toolbox" style="display: none">
+  <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
+    <block type="controls_setup" class="racer"></block>
+    <block type="controls_wait">
+      <value name="DELAY_TIME">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_repeat_times">
+      <value name="TIMES">
+        <block type="math_number">
+          <field name="NUM">5</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_delay" class="racer">
       <value name="DELAY_TIME">
         <block type="math_number">
           <field name="NUM">1000</field>
         </block>
       </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_LIGHTS}" categorystyle="lights">
-      <block type="lights_led">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="STATUS">
-          <block type="boolean_onoff"></block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_SOUNDS}" categorystyle="sounds">
-      <block type="sounds_tone">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="FREQ">
-          <block type="math_number">
-            <field name="NUM">440</field>
-          </block>
-        </value>
-      </block>
-      <block type="sounds_noTone">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="%{BKY_CAT_MOTORS}" categorystyle="motors">
-      <block type="motors_servo">
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">6</field>
-          </block>
-        </value>
-        <value name="DEGREE">
-          <block type="math_number">
-            <field name="NUM">180</field>
-          </block>
-        </value>
-      </block>
-    </category>
-  </xml>
-
-  <xml xmlns="https://developers.google.com/blockly/xml" id="ezDisplay_toolbox" style="display: none">
-    <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
-      <block type="controls_setup" class="ezDisplay"></block>
-      <block type="controls_wait">
-        <value name="DELAY_TIME">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_repeat_times">
-        <value name="TIMES">
-          <block type="math_number">
-            <field name="NUM">5</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_delay" class="ezDisplay">
-        <value name="DELAY_TIME">
-          <block type="math_number">
-            <field name="NUM">1000</field>
-          </block>
-        </value>
-      </block>
-      <block type="controls_if" colour="60"></block>
-      <block type="controls_if">
-        <mutation else="1"></mutation>
-      </block>
-      <block type="controls_if">
-        <mutation elseif="1" else="1"></mutation>
-      </block>
-      <block type="controls_whileUntil" class="ezDisplay"></block>
-      <block type="controls_flow_statements" class="ezDisplay"></block>
-      <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category> -->
-    </category>
-    <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="ezDisplay">
-      <block type="logic_compare"></block>
-      <block type="logic_operation"></block>
-      <block type="logic_negate"></block>
-      <block type="logic_boolean"></block>
-      <block type="extra_logic"></block>
-      <block type="logic_null"></block>
-      <block type="logic_ternary"></block>
-    </category>
-    <category name="%{BKY_CAT_MATH}" categorystyle="math" class="ezDisplay">
-      <block type="math_arithmetic">
-        <value name="A">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="B">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_single">
-        <value name="NUM">
-          <block type="math_number">
-            <field name="NUM">9</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_trig">
-        <value name="NUM">
-          <block type="math_number">
-            <field name="NUM">45</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_constrain">
-        <value name="VALUE">
-          <block type="math_number">
-            <field name="NUM">50</field>
-          </block>
-        </value>
-        <value name="LOW">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="HIGH">
-          <block type="math_number">
-            <field name="NUM">100</field>
-          </block>
-        </value>
-      </block>
-      <block type="math_random_int">
-        <value name="FROM">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TO">
-          <block type="math_number">
-            <field name="NUM">100</field>
-          </block>
-        </value>
-      </block>
-      <block type="operators_map"></block>
-    </category>
-    <category name="%{BKY_CAT_VARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="CREATE_TYPED_VARIABLE"
-      class="ezDisplay">
-    </category>
-    <category name="%{BKY_CAT_CONSTANTS}" categorystyle="constants" class="ezDisplay">
-      <block type="math_number">
-        <field name="NUM">123</field>
-      </block>
-      <block type="math_constant"></block>
-      <block type="led_builtin"></block>
-      <block type="boolean_onoff"></block>
-      <block type="text"></block>
-    </category>
-    <category name="%{BKY_CAT_SENSORS}" categorystyle="sensors" class="ezDisplay">
-      <block type="logic_compare" inputsInline="false">
-        <value name="A">
-          <block type="boolean_button">
-            <value name="PIN">
+    </block>
+    <block type="controls_if" colour="60"></block>
+    <block type="controls_if">
+      <mutation else="1"></mutation>
+    </block>
+    <block type="controls_if">
+      <mutation elseif="1" else="1"></mutation>
+    </block>
+    <block type="controls_whileUntil" class="racer"></block>
+    <block type="controls_flow_statements" class="racer"></block>
+    <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="racer"></category> -->
+  </category>
+  <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="racer">
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_negate"></block>
+    <block type="logic_boolean"></block>
+    <block type="extra_logic"></block>
+    <block type="logic_null"></block>
+    <block type="logic_ternary"></block>
+  </category>
+  <category name="%{BKY_CAT_MATH}" categorystyle="math" class="racer">
+    <block type="math_arithmetic">
+      <value name="A">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="B">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_single">
+      <value name="NUM">
+        <block type="math_number">
+          <field name="NUM">9</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_trig">
+      <value name="NUM">
+        <block type="math_number">
+          <field name="NUM">45</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_constrain">
+      <value name="VALUE">
+        <block type="math_number">
+          <field name="NUM">50</field>
+        </block>
+      </value>
+      <value name="LOW">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="HIGH">
+        <block type="math_number">
+          <field name="NUM">100</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_random_int">
+      <value name="FROM">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TO">
+        <block type="math_number">
+          <field name="NUM">100</field>
+        </block>
+      </value>
+    </block>
+    <block type="operators_map">
+      <value name="OLD_LOW">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="OLD_HIGH">
+        <block type="math_number">
+          <field name="NUM">1023</field>
+        </block>
+      </value>
+      <value name="NEW_LOW">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="NEW_HIGH">
+        <block type="math_number">
+          <field name="NUM">255</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_VARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="CREATE_TYPED_VARIABLE" class="racer">
+  </category>
+  <category name="%{BKY_CAT_CONSTANTS}" categorystyle="constants" class="racer">
+    <block type="math_number">
+      <field name="NUM">123</field>
+    </block>
+    <block type="math_constant"></block>
+    <block type="led_builtin"></block>
+    <block type="boolean_onoff"></block>
+    <block type="text"></block>
+  </category>
+  <category name="%{BKY_CAT_COMM}" categorystyle="comm">
+    <block type="serial_println">
+      <value name="CONTENT">
+        <block type="text"></block>
+      </value>
+    </block>
+    <block type="serial_print">
+      <value name="CONTENT">
+        <block type="text"></block>
+      </value>
+    </block>
+    <block type="text"></block>
+    <block type="serial_read"></block>
+  </category>
+  <category name="%{BKY_CAT_LIGHTS}" categorystyle="lights">
+    <block type="lights_led">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="STATUS">
+        <block type="boolean_onoff"></block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_SOUNDS}" categorystyle="sounds">
+    <block type="sounds_tone">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="FREQ">
+        <block type="math_number">
+          <field name="NUM">440</field>
+        </block>
+      </value>
+    </block>
+    <block type="sounds_noTone">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_MOTORS}" categorystyle="motors">
+    <block type="motors_servo">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="DEGREE">
+        <block type="math_number">
+          <field name="NUM">180</field>
+        </block>
+      </value>
+    </block>
+    <block type="motors_dc">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="VALUE">
+        <block type="math_number">
+          <field name="NUM">255</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_SENSORS}" categorystyle="sensors" class="racer ">
+    <block type="logic_compare" inputsInline="false">
+      <value name="A">
+        <block type="boolean_button">
+          <value name="PIN">
             <block type="math_number">
               <field name="NUM">2</field>
             </block>
             <value name="PIN">
-          </block>
-        </value>
-        <value name="B">
-          <block type="boolean_pressed"></block>
-        </value>
-      </block>
-      <block type="pulsein_return">
-        <value name="TYPE">
-          <block type="boolean_hilo">
-            <field name="BOOL">HIGH</field>
-          </block>
-        </value>
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TIMEOUT">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-      </block>
-      <block type="pulsein_discard">
-        <value name="TYPE">
-          <block type="boolean_hilo">
-            <field name="BOOL">HIGH</field>
-          </block>
-        </value>
-        <value name="PIN">
-          <block type="math_number">
-            <field name="NUM">1</field>
-          </block>
-        </value>
-        <value name="TIMEOUT">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-      </block>
-    </category>
-    <category name="ezDisplay" categorystyle="ezDisplay" class="ezDisplay">
-      <block type="SSD1306_clear"></block>
-      <block type="SSD1306_print">
-        <value name="CONTENT">
-          <block type="text"></block>
-        </value>
-      </block>
-      <block type="SSD1306_set_font">
-        <value name="FONT">
-          <block type="SSD1306_font"> </block>
-        </value>
-      </block>
-      <block type="SSD1306_set_cursor">
-        <value name="X">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="Y">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-      </block>
-      <block type="SSD1306_print_image">
-        <value name="CONTENT">
-          <block type="text"></block>
-        </value>
-        <value name="X">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="Y">
-          <block type="math_number">
-            <field name="NUM">0</field>
-          </block>
-        </value>
-        <value name="W">
-          <block type="math_number">
-            <field name="NUM">128</field>
-          </block>
-        </value>
-        <value name="H">
-          <block type="math_number">
-            <field name="NUM">8</field>
-          </block>
-        </value>
-      </block>
-      <block type="SSD1306_framebuffer_switch_working"></block>
-      <block type="SSD1306_framebuffer_switch_displayed"></block>
-      <block type="SSD1306_framebuffer_switch_both"></block>
-    </category>
-    <category name="%{BKY_CAT_PROCEDURES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category>
-  </xml>
+        </block>
+      </value>
+      <value name="B">
+        <block type="boolean_pressed"></block>
+      </value>
+    </block>
+    <block type="analog_read">
+      <value name="PIN">
+        <block type="analog_pin">
+          <field name="PIN">A0</field>
+        </block>
+      </value>
+    </block>
+    <block type="sensors_sonic">
+      <value name="ECHO">
+        <block type="math_number">
+          <field name="NUM">3</field>
+        </block>
+      </value>
+      <value name="TRIGGER">
+        <block type="math_number">
+          <field name="NUM">4</field>
+        </block>
+      </value>
+    </block>
+    <block type="pulsein_return">
+      <value name="TYPE">
+        <block type="boolean_hilo">
+          <field name="BOOL">HIGH</field>
+        </block>
+      </value>
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TIMEOUT">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="pulsein_discard">
+      <value name="TYPE">
+        <block type="boolean_hilo">
+          <field name="BOOL">HIGH</field>
+        </block>
+      </value>
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TIMEOUT">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="Subroutines" colour="60" custom="PROCEDURE" class="racer"></category>
+</xml>
 
-  <div id="notSupported" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close">&times;</span>
-        <h2>Can not access your <span id="board">...</span></h2>
-      </div>
-      <div class="modal-body">
-        Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you:
-        <ul>
-          <li>Use MS Edge, Chrome 78, or Brave 1.69 or later</li>
-          <li>Enable the <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
-            <a href="about://flags/#enable-experimental-web-platform-features"><code>about://flags/
-            </code></a>
-          </li>
-          <li>Use HTTPS</li>
-        </ul>
-      </div>
-      <div class="modal-footer" style="text-align: right;">
-        <a href="http://" class="" target="_blank" rel="noopener noreferrer">How to enable Experimental
-          Flags</a>
-      </div>
+<xml xmlns="https://developers.google.com/blockly/xml" id="bot_toolbox" style="display: none">
+  <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
+    <block type="controls_loop"></block>
+    <block type="controls_wait">
+      <value name="DELAY_TIME">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_repeat_times">
+      <value name="TIMES">
+        <block type="math_number">
+          <field name="NUM">5</field>
+        </block>
+      </value>
+    </block>
+    <value name="DELAY_TIME">
+      <block type="math_number">
+        <field name="NUM">1000</field>
+      </block>
+    </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_LIGHTS}" categorystyle="lights">
+    <block type="lights_led">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="STATUS">
+        <block type="boolean_onoff"></block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_SOUNDS}" categorystyle="sounds">
+    <block type="sounds_tone">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="FREQ">
+        <block type="math_number">
+          <field name="NUM">440</field>
+        </block>
+      </value>
+    </block>
+    <block type="sounds_noTone">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="%{BKY_CAT_MOTORS}" categorystyle="motors">
+    <block type="motors_servo">
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">6</field>
+        </block>
+      </value>
+      <value name="DEGREE">
+        <block type="math_number">
+          <field name="NUM">180</field>
+        </block>
+      </value>
+    </block>
+  </category>
+</xml>
+
+<xml xmlns="https://developers.google.com/blockly/xml" id="ezDisplay_toolbox" style="display: none">
+  <category name="%{BKY_CAT_CONTROLS}" categorystyle="controls">
+    <block type="controls_setup" class="ezDisplay"></block>
+    <block type="controls_wait">
+      <value name="DELAY_TIME">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_repeat_times">
+      <value name="TIMES">
+        <block type="math_number">
+          <field name="NUM">5</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_delay" class="ezDisplay">
+      <value name="DELAY_TIME">
+        <block type="math_number">
+          <field name="NUM">1000</field>
+        </block>
+      </value>
+    </block>
+    <block type="controls_if" colour="60"></block>
+    <block type="controls_if">
+      <mutation else="1"></mutation>
+    </block>
+    <block type="controls_if">
+      <mutation elseif="1" else="1"></mutation>
+    </block>
+    <block type="controls_whileUntil" class="ezDisplay"></block>
+    <block type="controls_flow_statements" class="ezDisplay"></block>
+    <!-- <category name="%{BKY_CAT_SUBROUTINES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category> -->
+  </category>
+  <category name="%{BKY_CAT_TESTS}" categorystyle="tests" class="ezDisplay">
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_negate"></block>
+    <block type="logic_boolean"></block>
+    <block type="extra_logic"></block>
+    <block type="logic_null"></block>
+    <block type="logic_ternary"></block>
+  </category>
+  <category name="%{BKY_CAT_MATH}" categorystyle="math" class="ezDisplay">
+    <block type="math_arithmetic">
+      <value name="A">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="B">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_single">
+      <value name="NUM">
+        <block type="math_number">
+          <field name="NUM">9</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_trig">
+      <value name="NUM">
+        <block type="math_number">
+          <field name="NUM">45</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_constrain">
+      <value name="VALUE">
+        <block type="math_number">
+          <field name="NUM">50</field>
+        </block>
+      </value>
+      <value name="LOW">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="HIGH">
+        <block type="math_number">
+          <field name="NUM">100</field>
+        </block>
+      </value>
+    </block>
+    <block type="math_random_int">
+      <value name="FROM">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TO">
+        <block type="math_number">
+          <field name="NUM">100</field>
+        </block>
+      </value>
+    </block>
+    <block type="operators_map"></block>
+  </category>
+  <category name="%{BKY_CAT_VARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="CREATE_TYPED_VARIABLE"
+            class="ezDisplay">
+  </category>
+  <category name="%{BKY_CAT_CONSTANTS}" categorystyle="constants" class="ezDisplay">
+    <block type="math_number">
+      <field name="NUM">123</field>
+    </block>
+    <block type="math_constant"></block>
+    <block type="led_builtin"></block>
+    <block type="boolean_onoff"></block>
+    <block type="text"></block>
+  </category>
+  <category name="%{BKY_CAT_SENSORS}" categorystyle="sensors" class="ezDisplay">
+    <block type="logic_compare" inputsInline="false">
+      <value name="A">
+        <block type="boolean_button">
+          <value name="PIN">
+            <block type="math_number">
+              <field name="NUM">2</field>
+            </block>
+            <value name="PIN">
+        </block>
+      </value>
+      <value name="B">
+        <block type="boolean_pressed"></block>
+      </value>
+    </block>
+    <block type="pulsein_return">
+      <value name="TYPE">
+        <block type="boolean_hilo">
+          <field name="BOOL">HIGH</field>
+        </block>
+      </value>
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TIMEOUT">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="pulsein_discard">
+      <value name="TYPE">
+        <block type="boolean_hilo">
+          <field name="BOOL">HIGH</field>
+        </block>
+      </value>
+      <value name="PIN">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <value name="TIMEOUT">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="ezDisplay" categorystyle="ezDisplay" class="ezDisplay">
+    <block type="SSD1306_clear"></block>
+    <block type="SSD1306_print">
+      <value name="CONTENT">
+        <block type="text"></block>
+      </value>
+    </block>
+    <block type="SSD1306_set_font">
+      <value name="FONT">
+        <block type="SSD1306_font"></block>
+      </value>
+    </block>
+    <block type="SSD1306_set_cursor">
+      <value name="X">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="Y">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="SSD1306_print_image">
+      <value name="CONTENT">
+        <block type="text"></block>
+      </value>
+      <value name="X">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="Y">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="W">
+        <block type="math_number">
+          <field name="NUM">128</field>
+        </block>
+      </value>
+      <value name="H">
+        <block type="math_number">
+          <field name="NUM">8</field>
+        </block>
+      </value>
+    </block>
+    <block type="SSD1306_framebuffer_switch_working"></block>
+    <block type="SSD1306_framebuffer_switch_displayed"></block>
+    <block type="SSD1306_framebuffer_switch_both"></block>
+  </category>
+  <category name="%{BKY_CAT_PROCEDURES}" colour="60" custom="PROCEDURE" class="ezDisplay"></category>
+</xml>
+
+<div id="notSupported" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Can not access your <span id="board">...</span></h2>
+    </div>
+    <div class="modal-body">
+      Sorry, <b>Web Serial</b> is not flagged "supported" in this browser, make sure you:
+      <ul>
+        <li>Use MS Edge, Chrome 78, or Brave 1.69 or later</li>
+        <li>Enable the <code style="white-space: nowrap;">#enable-experimental-web-platform-features</code> flag in
+          <a href="about://flags/#enable-experimental-web-platform-features"><code>about://flags/
+          </code></a>
+        </li>
+        <li>Use HTTPS</li>
+      </ul>
+    </div>
+    <div class="modal-footer" style="text-align: right;">
+      <a href="http://" class="" target="_blank" rel="noopener noreferrer">How to enable Experimental
+        Flags</a>
     </div>
   </div>
+</div>
 
-  <div id="arduinoOutput" class="modal">
-    <div class="modal-sheet">
-      <div class="modal-body" id="response">
-        <span class="material-icons-outlined"></span>
-        <pre></pre>
-      </div>
-      <div class="modal-footer">
-        <span class="closeText">Close</span>
-      </div>
+<div id="arduinoOutput" class="modal">
+  <div class="modal-sheet">
+    <div class="modal-body" id="response">
+      <span class="material-icons-outlined"></span>
+      <pre></pre>
+    </div>
+    <div class="modal-footer">
+      <span class="closeText">Close</span>
     </div>
   </div>
+</div>
 </body>
 
 </html>
