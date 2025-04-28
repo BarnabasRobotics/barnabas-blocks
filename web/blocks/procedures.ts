@@ -570,7 +570,7 @@ const PROCEDURES_MUTATORARGUMENT = {
             .appendField(field, "NAME")
             .appendField(new FieldDropdown([
                 ["String", "String"],
-                ["Number", "Number"],
+                ["Number", "double"],
             ]), "TYPE")
         this.setPreviousStatement(true)
         this.setNextStatement(true)
@@ -670,17 +670,6 @@ const PROCEDURES_MUTATORARGUMENT = {
 }
 Blockly.Blocks["procedures_mutatorarg"] = PROCEDURES_MUTATORARGUMENT
 
-// Blockly.Blocks["arguments_container"] = {
-//     init: function (this: Blockly.Block) {
-//         this.appendDummyInput()
-//             .appendField("parameters")
-//         this.appendStatementInput("STACK")
-//         this.setColour("#f92f2f")
-//         this.setTooltip("Add parameters to the function.")
-//         this.contextMenu = false
-//     },
-// }
-
 Blockly.Blocks["procedures_defnoreturn"] = {
     ...PROCEDURE_DEF_COMMON,
     init: function (this: ProcedureBlock & BlockSvg) {
@@ -722,7 +711,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
      *     - that it DOES NOT have a return value.
      */
     getProcedureDef: function (this: ProcedureBlock): [string, string[], false] {
-        return [this.getFieldValue("NAME"), this.arguments_.map(([n, _]) => n), false]
+        return [this.getFieldValue("NAME"), this.arguments_.map(([n]) => n), false]
     },
     callType_: "procedures_callnoreturn",
 }
