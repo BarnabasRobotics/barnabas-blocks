@@ -2,11 +2,14 @@ import * as Blockly from "blockly"
 import {
     BlockSvg,
     Connection,
+    ContextMenu,
+    ContextMenuRegistry,
     Events,
     FieldCheckbox,
     FieldDropdown,
     fieldRegistry,
     FieldTextInput,
+    Msg,
     Procedures,
     VariableModel,
     Variables,
@@ -15,6 +18,8 @@ import {
 } from "blockly"
 import { Block } from "blockly/core"
 import * as xmlUtils from "./xml"
+import { LegacyContextMenuOption } from "blockly/core/contextmenu_registry"
+import ContextMenuOption = ContextMenuRegistry.ContextMenuOption
 
 // Blockly.Extensions.registerMutator(
 //     "procedures_mutatorarg", {
@@ -211,8 +216,7 @@ const PROCEDURE_DEF_COMMON = {
                     this.workspace,
                     varId,
                     varName,
-                    "",
-                    // varType,
+                    varType,
                 )
 
                 if (variable !== null) {
@@ -248,14 +252,14 @@ const PROCEDURE_DEF_COMMON = {
                     // to separate params from variables.
                     name: this.argumentVarModels_[i].name,
                     id: this.argumentVarModels_[i].getId(),
-                    // type: this.argumentVarModels_[i].type,
+                    type: this.argumentVarModels_[i].type,
                 })
             }
         }
         if (!this.hasStatements_) {
             state["hasStatements"] = false
         }
-        return state
+        return state as ProcedureExtraState
     },
     /**
    * Applies the given state to this block.
@@ -273,8 +277,7 @@ const PROCEDURE_DEF_COMMON = {
                     this.workspace,
                     param["id"],
                     param["name"],
-                    "",
-                    // param["type"],
+                    param["type"],
                 )
                 this.arguments_.push([variable.name, variable.type])
                 this.argumentVarModels_.push(variable)
@@ -399,151 +402,151 @@ const PROCEDURE_DEF_COMMON = {
             }
         }
     },
-    // /**
-    //  * Return all variables referenced by this block.
-    //  *
-    //  * @returns List of variable names.
-    //  */
-    // getVars: function (this: ProcedureBlock): string[] {
-    //     return this.arguments_
-    // },
-    // /**
-    //  * Return all variables referenced by this block.
-    //  *
-    //  * @returns List of variable models.
-    //  */
-    // getVarModels: function (this: ProcedureBlock): VariableModel[] {
-    //     return this.argumentVarModels_
-    // },
-    // /**
-    //  * Notification that a variable is renaming.
-    //  * If the ID matches one of this block's variables, rename it.
-    //  *
-    //  * @param oldId ID of variable to rename.
-    //  * @param newId ID of new variable.  May be the same as oldId, but
-    //  *     with an updated name.  Guaranteed to be the same type as the
-    //  *     old variable.
-    //  */
-    // renameVarById: function (
-    //     this: ProcedureBlock & BlockSvg,
-    //     oldId: string,
-    //     newId: string,
-    // ) {
-    //     const oldVariable = this.workspace.getVariableById(oldId)!
-    //     if (oldVariable.type !== "") {
-    //         // Procedure arguments always have the empty type.
-    //         return
-    //     }
-    //     const oldName = oldVariable.name
-    //     const newVar = this.workspace.getVariableById(newId)!
-    //
-    //     let change = false
-    //     for (let i = 0; i < this.argumentVarModels_.length; i++) {
-    //         if (this.argumentVarModels_[i].getId() === oldId) {
-    //             this.arguments_[i] = newVar.name
-    //             this.argumentVarModels_[i] = newVar
-    //             change = true
-    //         }
-    //     }
-    //     if (change) {
-    //         this.displayRenamedVar_(oldName, newVar.name)
-    //         Procedures.mutateCallers(this)
-    //     }
-    // },
-    // /**
-    //  * Notification that a variable is renaming but keeping the same ID.  If the
-    //  * variable is in use on this block, rerender to show the new name.
-    //  *
-    //  * @param variable The variable being renamed.
-    //  */
-    // updateVarName: function (
-    //     this: ProcedureBlock & BlockSvg,
-    //     variable: VariableModel,
-    // ) {
-    //     const newName = variable.name
-    //     let change = false
-    //     let oldName
-    //     for (let i = 0; i < this.argumentVarModels_.length; i++) {
-    //         if (this.argumentVarModels_[i].getId() === variable.getId()) {
-    //             oldName = this.arguments_[i]
-    //             this.arguments_[i] = newName
-    //             change = true
-    //         }
-    //     }
-    //     if (change) {
-    //         this.displayRenamedVar_(oldName as string, newName)
-    //         Procedures.mutateCallers(this)
-    //     }
-    // },
-    // /**
-    //  * Update the display to reflect a newly renamed argument.
-    //  *
-    //  * @internal
-    //  * @param oldName The old display name of the argument.
-    //  * @param newName The new display name of the argument.
-    //  */
-    // displayRenamedVar_: function (
-    //     this: ProcedureBlock & BlockSvg,
-    //     oldName: string,
-    //     newName: string,
-    // ) {
-    //     this.updateParams_()
-    //     // Update the mutator's variables if the mutator is open.
-    //     const mutator = this.getIcon(Mutator.TYPE)
-    //     if (mutator && mutator.bubbleIsVisible()) {
-    //         const blocks = mutator.getWorkspace()!.getAllBlocks(false)
-    //         for (let i = 0, block; (block = blocks[i]); i++) {
-    //             if (
-    //                 block.type === "procedures_mutatorarg"
-    //                 && Names.equals(oldName, block.getFieldValue("NAME"))
-    //             ) {
-    //                 block.setFieldValue(newName, "NAME")
-    //             }
-    //         }
-    //     }
-    // },
-    // /**
-    //  * Add custom menu options to this block's context menu.
-    //  *
-    //  * @param options List of menu options to add to.
-    //  */
-    // customContextMenu: function (
-    //     this: ProcedureBlock,
-    //     options: Array<ContextMenuOption | LegacyContextMenuOption>,
-    // ) {
-    //     if (this.isInFlyout) {
-    //         return
-    //     }
-    //     // Add option to create caller.
-    //     const name = this.getFieldValue("NAME")
-    //     const callProcedureBlockState = {
-    //         type: (this as AnyDuringMigration).callType_,
-    //         extraState: { name: name, params: this.arguments_ },
-    //     }
-    //     options.push({
-    //         enabled: true,
-    //         text: Msg["PROCEDURES_CREATE_DO"].replace("%1", name),
-    //         callback: ContextMenu.callbackFactory(this, callProcedureBlockState),
-    //     })
-    //
-    //     // Add options to create getters for each parameter.
-    //     if (!this.isCollapsed()) {
-    //         for (let i = 0; i < this.argumentVarModels_.length; i++) {
-    //             const argVar = this.argumentVarModels_[i]
-    //             const getVarBlockState = {
-    //                 type: "variables_get",
-    //                 fields: {
-    //                     VAR: { name: argVar.name, id: argVar.getId(), type: argVar.type },
-    //                 },
-    //             }
-    //             options.push({
-    //                 enabled: true,
-    //                 text: Msg["VARIABLES_SET_CREATE_GET"].replace("%1", argVar.name),
-    //                 callback: ContextMenu.callbackFactory(this, getVarBlockState),
-    //             })
-    //         }
-    //     }
-    // },
+    /**
+     * Return all variables referenced by this block.
+     *
+     * @returns List of variable names.
+     */
+    getVars: function (this: ProcedureBlock): string[] {
+        return this.arguments_.map(([arg]) => arg)
+    },
+    /**
+     * Return all variables referenced by this block.
+     *
+     * @returns List of variable models.
+     */
+    getVarModels: function (this: ProcedureBlock): VariableModel[] {
+        return this.argumentVarModels_
+    },
+    /**
+     * Notification that a variable is renaming.
+     * If the ID matches one of this block's variables, rename it.
+     *
+     * @param oldId ID of variable to rename.
+     * @param newId ID of new variable.  May be the same as oldId, but
+     *     with an updated name.  Guaranteed to be the same type as the
+     *     old variable.
+     */
+    renameVarById: function (
+        this: ProcedureBlock & BlockSvg,
+        oldId: string,
+        newId: string,
+    ) {
+        const oldVariable = this.workspace.getVariableById(oldId)!
+        if (oldVariable.type !== "") {
+            // Procedure arguments always have the empty type.
+            return
+        }
+        const oldName = oldVariable.name
+        const newVar = this.workspace.getVariableById(newId)!
+
+        let change = false
+        for (let i = 0; i < this.argumentVarModels_.length; i++) {
+            if (this.argumentVarModels_[i].getId() === oldId) {
+                this.arguments_[i][0] = newVar.name
+                this.argumentVarModels_[i] = newVar
+                change = true
+            }
+        }
+        if (change) {
+            this.displayRenamedVar_(oldName, newVar.name)
+            Procedures.mutateCallers(this)
+        }
+    },
+    /**
+     * Notification that a variable is renaming but keeping the same ID.  If the
+     * variable is in use on this block, rerender to show the new name.
+     *
+     * @param variable The variable being renamed.
+     */
+    updateVarName: function (
+        this: ProcedureBlock & BlockSvg,
+        variable: VariableModel,
+    ) {
+        const newName = variable.name
+        let change = false
+        let oldName
+        for (let i = 0; i < this.argumentVarModels_.length; i++) {
+            if (this.argumentVarModels_[i].getId() === variable.getId()) {
+                oldName = this.arguments_[i][0]
+                this.arguments_[i] = [newName, this.arguments_[i][1]]
+                change = true
+            }
+        }
+        if (change) {
+            this.displayRenamedVar_(oldName as string, newName)
+            Procedures.mutateCallers(this)
+        }
+    },
+    /**
+     * Update the display to reflect a newly renamed argument.
+     *
+     * @internal
+     * @param oldName The old display name of the argument.
+     * @param newName The new display name of the argument.
+     */
+    displayRenamedVar_: function (
+        this: ProcedureBlock & BlockSvg,
+        oldName: string,
+        newName: string,
+    ) {
+        this.updateParams_()
+        // Update the mutator's variables if the mutator is open.
+        // const mutator = this.getIcon(IconType<WarningIcon>)
+        // if (mutator && mutator.bubbleIsVisible()) {
+        //     const blocks = mutator.getWorkspace()!.getAllBlocks(false)
+        //     for (let i = 0, block; (block = blocks[i]); i++) {
+        //         if (
+        //             block.type === "procedures_mutatorarg"
+        //             && Names.equals(oldName, block.getFieldValue("NAME"))
+        //         ) {
+        //             block.setFieldValue(newName, "NAME")
+        //         }
+        //     }
+        // }
+    },
+    /**
+     * Add custom menu options to this block's context menu.
+     *
+     * @param options List of menu options to add to.
+     */
+    customContextMenu: function (
+        this: ProcedureBlock,
+        options: Array<ContextMenuOption | LegacyContextMenuOption>,
+    ) {
+        if (this.isInFlyout) {
+            return
+        }
+        // Add option to create caller.
+        const name = this.getFieldValue("NAME")
+        const callProcedureBlockState = {
+            type: (this as AnyDuringMigration).callType_,
+            extraState: { name: name, params: this.arguments_ },
+        }
+        options.push({
+            enabled: true,
+            text: Msg["PROCEDURES_CREATE_DO"].replace("%1", name),
+            callback: ContextMenu.callbackFactory(this, callProcedureBlockState),
+        })
+
+        // Add options to create getters for each parameter.
+        if (!this.isCollapsed()) {
+            for (let i = 0; i < this.argumentVarModels_.length; i++) {
+                const argVar = this.argumentVarModels_[i]
+                const getVarBlockState = {
+                    type: "variables_get",
+                    fields: {
+                        VAR: { name: argVar.name, id: argVar.getId(), type: argVar.type },
+                    },
+                }
+                options.push({
+                    enabled: true,
+                    text: Msg["VARIABLES_SET_CREATE_GET"].replace("%1", argVar.name),
+                    callback: ContextMenu.callbackFactory(this, getVarBlockState),
+                })
+            }
+        }
+    },
 }
 
 const PROCEDURES_MUTATORARGUMENT = {
