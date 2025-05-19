@@ -67,7 +67,7 @@ type ArgumentMixinType = typeof PROCEDURES_MUTATORARGUMENT
 
 type ArgumentBlock = Blockly.Block & ArgumentMixin
 
-type ProcedureBlock = Block & ProcedureMixin
+export type ProcedureBlock = Block & ProcedureMixin
 type ProcedureMixinType = typeof PROCEDURE_DEF_COMMON
 
 type ContainerBlock = Block & ContainerMixin
@@ -714,20 +714,4 @@ Blockly.Blocks["procedures_defnoreturn"] = {
         return [this.getFieldValue("NAME"), this.arguments_.map(([n]) => n), false]
     },
     callType_: "procedures_callnoreturn",
-}
-
-Blockly.Blocks["procedures_callnoreturn"] = {
-    getProcedureModel() {
-        return this.model
-    },
-
-    isProcedureDef() {
-        return false
-    },
-
-    getVarModels() {
-        // If your procedure references variables
-        // then you should return those models here.
-        return [] as Blockly.VariableModel[]
-    },
 }
