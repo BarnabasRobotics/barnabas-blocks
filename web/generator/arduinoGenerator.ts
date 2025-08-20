@@ -110,7 +110,12 @@ export class ArduinoGenerator extends CodeGenerator {
         // const variableSetters = workspace.getBlocksByType("variables_set")
         const variableGetters = workspace.getBlocksByType("variables_get")
 
-        let procedureArgVars = workspace.getBlocksByType("procedures_defnoreturn").map(f => new Set((f as ProcedureBlock).argumentVarModels_)).reduce((a, b) => a.union(b), new Set())
+        let procedureArgVars = [
+            ...workspace.getBlocksByType("procedures_defnoreturn"),
+            ...workspace.getBlocksByType("procedures_defreturn"),
+        ]
+            .map(f => new Set((f as ProcedureBlock).argumentVarModels_))
+            .reduce((a, b) => a.union(b), new Set())
 
         for (const nonProcedureArgVar of new Set(variables).difference(procedureArgVars)) {
             // console.log("variable type")
