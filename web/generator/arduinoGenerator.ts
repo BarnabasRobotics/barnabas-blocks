@@ -107,36 +107,45 @@ export class ArduinoGenerator extends CodeGenerator {
 
         // Add user Blockly.Variables, but only ones that are being used.
         const variables = Variables.allUsedVarModels(workspace)
-        const variableSetters = workspace.getBlocksByType("variables_set")
+        // const variableSetters = workspace.getBlocksByType("variables_set")
         const variableGetters = workspace.getBlocksByType("variables_get")
-        for (let i = 0; i < variables.length; i++) {
-            const setters = variableSetters.filter(
-                block => block.getFieldValue("VAR") === variables[i].getId(),
-            )
-            const types = setters.map((block) => {
-                const output = block.getChildren(true)[0]
-                return {
-                    block,
-                    type: output && output.outputConnection ? output.outputConnection.getCheck()?.[0] : undefined,
-                }
-            })
-            // check for mismatch
-            if (types.some(({ type }) => type !== types[0].type && type !== undefined)) {
-                types.forEach(({ block }) => { block.setWarningText(`Variable has conflicting types: ${types.map(({ type }) => type).join(", ")}`) })
-            } else {
-                types.forEach(({ block }) => { block.setWarningText(null) })
-            }
 
-            const type = types[0]?.type || "Number"
+        let procedureArgVars = workspace.getBlocksByType("procedures_defnoreturn").map(f => new Set((f as ProcedureBlock).argumentVarModels_)).reduce((a, b) => a.union(b), new Set())
+
+        for (const nonProcedureArgVar of new Set(variables).difference(procedureArgVars)) {
+            // console.log("variable type")
+            // console.log(variables[i].type)
+            // console.log("provenance")
+            // console.log((variables as unknown as { fn: boolean }).fn)
+
+            // const setters = variableSetters.filter(
+            //     block => block.getFieldValue("VAR") === variables[i].getId(),
+            // )
+            // const types = setters.map((block) => {
+            //     const output = block.getChildren(true)[0]
+            //     return {
+            //         block,
+            //         type: output && output.outputConnection ? output.outputConnection.getCheck()?.[0] : undefined,
+            //     }
+            // })
+            // // check for mismatch
+            // if (types.some(({ type }) => type !== types[0].type && type !== undefined)) {
+            //     types.forEach(({ block }) => { block.setWarningText(`Variable has conflicting types: ${types.map(({ type }) => type).join(", ")}`) })
+            // } else {
+            //     types.forEach(({ block }) => { block.setWarningText(null) })
+            // }
+
+            // const type = types[0]?.type || "Number"
+            const type = nonProcedureArgVar.type
             variableGetters.forEach((block) => {
-                if (block.getFieldValue("VAR") === variables[i].getId()) {
+                if (block.getFieldValue("VAR") === nonProcedureArgVar.getId()) {
                     block.outputConnection?.setCheck(type)
                 }
             })
 
             const arduinoType = this.TYPES[type]
             const defaultValue = this.VAR_DEFAULTS[type]
-            const name = this.nameDB_.getName(variables[i].getId(), Names.NameType.VARIABLE)
+            const name = this.nameDB_.getName(nonProcedureArgVar.getId(), Names.NameType.VARIABLE)
 
             defvars.push(`${arduinoType} ${name} = ${defaultValue}`)
         }

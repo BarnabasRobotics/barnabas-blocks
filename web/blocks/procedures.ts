@@ -16,7 +16,7 @@ import {
     Workspace,
     Xml,
 } from "blockly"
-import { Block } from "blockly/core"
+import { Block, Names } from "blockly/core"
 import * as xmlUtils from "./xml"
 import { LegacyContextMenuOption } from "blockly/core/contextmenu_registry"
 import ContextMenuOption = ContextMenuRegistry.ContextMenuOption
@@ -368,8 +368,9 @@ const PROCEDURE_DEF_COMMON = {
             const varName = paramBlock.getFieldValue("NAME") as string
             const varType = paramBlock.getFieldValue("TYPE") as string
             this.arguments_.push([varName, varType])
-            // const variable = this.workspace.getVariable(varName, varType)!
-            const variable = this.workspace.getVariable(varName, "")!
+            const variable = this.workspace.getVariable(varName, varType)!
+            // const variable = this.workspace.getVariable(varName)!
+            // variable.type = varType
             this.argumentVarModels_.push(variable)
 
             this.paramIds_.push(paramBlock.id)
@@ -433,10 +434,10 @@ const PROCEDURE_DEF_COMMON = {
         newId: string,
     ) {
         const oldVariable = this.workspace.getVariableById(oldId)!
-        if (oldVariable.type !== "") {
-            // Procedure arguments always have the empty type.
-            return
-        }
+        // if (oldVariable.type !== "") {
+        //     // Procedure arguments always have the empty type.
+        //     return
+        // }
         const oldName = oldVariable.name
         const newVar = this.workspace.getVariableById(newId)!
 
@@ -492,18 +493,18 @@ const PROCEDURE_DEF_COMMON = {
     ) {
         this.updateParams_()
         // Update the mutator's variables if the mutator is open.
-        // const mutator = this.getIcon(IconType<WarningIcon>)
+        // const mutator = this.getIcon(new IconType<WarningIcon>())
         // if (mutator && mutator.bubbleIsVisible()) {
-        //     const blocks = mutator.getWorkspace()!.getAllBlocks(false)
-        //     for (let i = 0, block; (block = blocks[i]); i++) {
-        //         if (
-        //             block.type === "procedures_mutatorarg"
-        //             && Names.equals(oldName, block.getFieldValue("NAME"))
-        //         ) {
-        //             block.setFieldValue(newName, "NAME")
-        //         }
-        //     }
-        // }
+        const blocks = this.workspace.getAllBlocks(false)
+        for (let i = 0, block; (block = blocks[i]); i++) {
+            if (
+                block.type === "procedures_mutatorarg"
+                && Names.equals(oldName, block.getFieldValue("NAME"))
+            ) {
+                block.setFieldValue(newName, "NAME")
+            }
+            // }
+        }
     },
     /**
      * Add custom menu options to this block's context menu.
@@ -572,6 +573,7 @@ const PROCEDURES_MUTATORARGUMENT = {
                 ["String", "String"],
                 ["Number", "double"],
             ]), "TYPE")
+
         this.setPreviousStatement(true)
         this.setNextStatement(true)
         this.setStyle("procedure_blocks")
@@ -630,13 +632,14 @@ const PROCEDURES_MUTATORARGUMENT = {
             return varName
         }
 
-        let model = outerWs.getVariable(varName, "")
+        const varType = sourceBlock.getFieldValue("TYPE")
+        let model = outerWs.getVariable(varName, varType)
         if (model && model.name !== varName) {
             // Rename the variable (case change)
             outerWs.renameVariableById(model.getId(), varName)
         }
         if (!model) {
-            model = outerWs.createVariable(varName, "")
+            model = outerWs.createVariable(varName, varType);
             if (model && this.createdVariables_) {
                 this.createdVariables_.push(model)
             }

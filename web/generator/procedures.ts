@@ -1,9 +1,9 @@
 import {Names} from "blockly"
 import {ArduinoGenerator, Order} from "./arduinoGenerator"
-import {ProcedureBlock} from "../blocks/procedures";
+import {ProcedureBlock} from "../blocks/procedures"
 
 export default function populate(generator: ArduinoGenerator) {
-    generator.forBlock["procedures_defreturn"] = function (
+    generator.forBlock["procedures_defreturn"] = generator.forBlock["procedures_defnoreturn"] = function (
         block: ProcedureBlock,
         generator: ArduinoGenerator,
     ) {
@@ -45,9 +45,11 @@ export default function populate(generator: ArduinoGenerator) {
         if (returnValue) {
             returnValue = generator.INDENT + "return " + returnValue + ";\n"
         }
-        const args = block.arguments_.map(([name, ty]) => `${ty} ${name}`);
+
+        const args = block.arguments_.map(([name, ty]) => `${ty} ${generator.getVariableName(name)}`)
         let code
-            = "auto "
+            = (returnValue ? "auto" : "void")
+            + " "
             + funcName
             + "("
             + args.join(", ")
