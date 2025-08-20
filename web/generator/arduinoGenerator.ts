@@ -299,6 +299,7 @@ import * as sense from "./sense"
 import * as serial from "./serial"
 import * as text from "./text"
 import * as variable from "./variable"
+import {ProcedureBlock} from "../blocks/procedures";
 
 actuate.default(arduinoGenerator)
 controlFlow.default(arduinoGenerator)
