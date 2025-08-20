@@ -89,11 +89,11 @@ const PROCEDURES_MUTATORCONTAINER = {
      */
     init: function (this: ContainerBlock) {
         this.appendDummyInput().appendField(
-            "PROCEDURES_MUTATORCONTAINER_TITLE",
+            Msg["PROCEDURES_MUTATORCONTAINER_TITLE"],
         )
         this.appendStatementInput("STACK")
         this.appendDummyInput("STATEMENT_INPUT")
-            .appendField("PROCEDURES_ALLOW_STATEMENTS")
+            .appendField(Msg["PROCEDURES_ALLOW_STATEMENTS"])
             .appendField(
                 fieldRegistry.fromJson({
                     type: "field_checkbox",
@@ -102,7 +102,7 @@ const PROCEDURES_MUTATORCONTAINER = {
                 "STATEMENTS",
             )
         this.setStyle("procedure_blocks")
-        this.setTooltip("PROCEDURES_MUTATORCONTAINER_TOOLTIP")
+        this.setTooltip(Msg["PROCEDURES_MUTATORCONTAINER_TOOLTIP"])
         this.contextMenu = false
     },
 }
@@ -129,7 +129,7 @@ const PROCEDURE_DEF_COMMON = {
         }
         if (hasStatements) {
             this.appendStatementInput("STACK").appendField(
-                "PROCEDURES_DEFNORETURN_DO",
+                Msg["PROCEDURES_DEFNORETURN_DO"],
             )
             if (this.getInput("RETURN")) {
                 this.moveInputBefore("STACK", "RETURN")
@@ -149,7 +149,7 @@ const PROCEDURE_DEF_COMMON = {
         let paramString = ""
         if (this.arguments_.length) {
             paramString
-            = "PROCEDURES_BEFORE_PARAMS" + " " + this.arguments_.map(([n, _]) => n).join(", ")
+            = Msg["PROCEDURES_BEFORE_PARAMS"] + " " + this.arguments_.map(([n, _]) => n).join(", ")
         }
         // The params field is deterministic based on the mutation,
         // no need to fire a change event.
@@ -567,7 +567,7 @@ const PROCEDURES_MUTATORARGUMENT = {
         (field as AnyDuringMigration).showEditor_ = newShowEditorFn
 
         this.appendDummyInput()
-            .appendField("mutatorarg title")
+            .appendField(Msg["PROCEDURES_MUTATORARG_TITLE"])
             .appendField(field, "NAME")
             .appendField(new FieldDropdown([
                 ["String", "String"],
@@ -577,7 +577,7 @@ const PROCEDURES_MUTATORARGUMENT = {
         this.setPreviousStatement(true)
         this.setNextStatement(true)
         this.setStyle("procedure_blocks")
-        this.setTooltip("mutatorarg tooltip")
+        this.setTooltip(Msg["PROCEDURES_MUTATORARG_TOOLTIP"])
         this.contextMenu = false
 
         // Create the default variable when we drag the block in from the flyout.
@@ -684,7 +684,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
         nameField!.setValidator(Procedures.rename)
         nameField.setSpellcheck(false)
         this.appendDummyInput()
-            .appendField("PROCEDURES_DEFNORETURN_TITLE")
+            .appendField(Msg["PROCEDURES_DEFNORETURN_TITLE"])
             .appendField(nameField, "NAME")
             .appendField("", "PARAMS")
         this.setMutator(new Blockly.icons.MutatorIcon(["procedures_mutatorarg"], this))
@@ -692,13 +692,13 @@ Blockly.Blocks["procedures_defnoreturn"] = {
             (this.workspace.options.comments
                 || (this.workspace.options.parentWorkspace
                     && this.workspace.options.parentWorkspace.options.comments))
-                && "PROCEDURES_DEFNORETURN_COMMENT"
+                && Msg["PROCEDURES_DEFNORETURN_COMMENT"]
         ) {
-            this.setCommentText("PROCEDURES_DEFNORETURN_COMMENT")
+            this.setCommentText(Msg["PROCEDURES_DEFNORETURN_COMMENT"])
         }
         this.setStyle("procedure_blocks")
-        this.setTooltip("PROCEDURES_DEFNORETURN_TOOLTIP")
-        this.setHelpUrl("PROCEDURES_DEFNORETURN_HELPURL")
+        this.setTooltip(Msg["PROCEDURES_DEFNORETURN_TOOLTIP"])
+        this.setHelpUrl(Msg["PROCEDURES_DEFNORETURN_HELPURL"])
         this.arguments_ = []
         this.argumentVarModels_ = []
         this.setStatements_(true)
