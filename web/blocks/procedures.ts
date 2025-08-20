@@ -639,7 +639,7 @@ const PROCEDURES_MUTATORARGUMENT = {
             outerWs.renameVariableById(model.getId(), varName)
         }
         if (!model) {
-            model = outerWs.createVariable(varName, varType);
+            model = outerWs.createVariable(varName, varType)
             if (model && this.createdVariables_) {
                 this.createdVariables_.push(model)
             }
@@ -713,8 +713,60 @@ Blockly.Blocks["procedures_defnoreturn"] = {
      *     - a list of all its arguments,
      *     - that it DOES NOT have a return value.
      */
-    getProcedureDef: function (this: ProcedureBlock): [string, string[], false] {
+    getProcedureDef: function (this: ProcedureBlock): [string, string[], boolean] {
         return [this.getFieldValue("NAME"), this.arguments_.map(([n]) => n), false]
     },
     callType_: "procedures_callnoreturn",
+}
+
+Blockly.Blocks["procedures_defreturn"] = {
+    ...PROCEDURE_DEF_COMMON,
+    /**
+     * Block for defining a procedure with a return value.
+     */
+    init: function (this: ProcedureBlock & BlockSvg) {
+        const initName = Procedures.findLegalName("", this)
+        const nameField = fieldRegistry.fromJson({
+            type: "field_input",
+            text: initName,
+        }) as FieldTextInput
+        nameField.setValidator(Procedures.rename)
+        nameField.setSpellcheck(false)
+        this.appendDummyInput()
+            .appendField(Msg["PROCEDURES_DEFRETURN_TITLE"])
+            .appendField(nameField, "NAME")
+            .appendField("", "PARAMS")
+        this.appendValueInput("RETURN")
+            // .setAlign(Align.RIGHT)
+            .setAlign(1)
+            .appendField(Msg["PROCEDURES_DEFRETURN_RETURN"])
+        this.setMutator(new Blockly.icons.MutatorIcon(["procedures_mutatorarg"], this))
+        if (
+            (this.workspace.options.comments
+                || (this.workspace.options.parentWorkspace
+                    && this.workspace.options.parentWorkspace.options.comments))
+                && Msg["PROCEDURES_DEFRETURN_COMMENT"]
+        ) {
+            this.setCommentText(Msg["PROCEDURES_DEFRETURN_COMMENT"])
+        }
+        this.setStyle("procedure_blocks")
+        this.setTooltip(Msg["PROCEDURES_DEFRETURN_TOOLTIP"])
+        this.setHelpUrl(Msg["PROCEDURES_DEFRETURN_HELPURL"])
+        this.arguments_ = []
+        this.argumentVarModels_ = []
+        this.setStatements_(true)
+        this.statementConnection_ = null
+    },
+    /**
+     * Return the signature of this procedure definition.
+     *
+     * @returns Tuple containing three elements:
+     *     - the name of the defined procedure,
+     *     - a list of all its arguments,
+     *     - that it DOES have a return value.
+     */
+    getProcedureDef: function (this: ProcedureBlock): [string, string[], boolean] {
+        return [this.getFieldValue("NAME"), this.arguments_.map(([n]) => n), true]
+    },
+    callType_: "procedures_callreturn",
 }
