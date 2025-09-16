@@ -1,6 +1,6 @@
-import {Names} from "blockly"
-import {ArduinoGenerator, Order} from "./arduinoGenerator"
-import {ProcedureBlock} from "../blocks/procedures"
+import { Names } from "blockly"
+import { ArduinoGenerator, Order } from "./arduinoGenerator"
+import { ProcedureBlock } from "../blocks/procedures"
 
 export default function populate(generator: ArduinoGenerator) {
     generator.forBlock["procedures_defreturn"] = generator.forBlock["procedures_defnoreturn"] = function (
