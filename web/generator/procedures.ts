@@ -32,7 +32,8 @@ export default function populate(generator: ArduinoGenerator) {
             branch = generator.statementToCode(block, "STACK")
         }
         let returnValue = ""
-        if (block.getInput("RETURN")) {
+        let returnBlock = block.getInput("RETURN")
+        if (returnBlock) {
             // The 'procedures_defnoreturn' block (which shares this code)
             // does not have a RETURN input.
             returnValue = generator.valueToCode(block, "RETURN", Order.ORDER_NONE) || ""
@@ -42,13 +43,14 @@ export default function populate(generator: ArduinoGenerator) {
             // After executing the function body, revisit this block for the return.
             xfix2 = xfix1
         }
+
         if (returnValue) {
             returnValue = generator.INDENT + "return " + returnValue + ";\n"
         }
 
         const args = block.arguments_.map(([name, ty]) => `${ty} ${generator.getVariableName(name)}`)
         let code
-            = (returnValue ? "auto" : "void")
+            = (returnValue ? ArduinoGenerator.TYPES?.[returnBlock.connection?.targetConnection?.getCheck()?.[0]] : "void")
             + " "
             + funcName
             + "("

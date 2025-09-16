@@ -49,10 +49,11 @@ export class ArduinoGenerator extends CodeGenerator {
 
     public loop_: string = ""
 
-    public TYPES = {
+    public static TYPES = {
         Number: "double",
-        Boolean: "bool",
         String: "String",
+        Boolean: "bool",
+        AnalogPin: "uint8_t",
     } as Record<string, string>
 
     public VAR_DEFAULTS: Record<string, string> = {
@@ -118,11 +119,6 @@ export class ArduinoGenerator extends CodeGenerator {
             .reduce((a, b) => a.union(b), new Set())
 
         for (const nonProcedureArgVar of new Set(variables).difference(procedureArgVars)) {
-            // console.log("variable type")
-            // console.log(variables[i].type)
-            // console.log("provenance")
-            // console.log((variables as unknown as { fn: boolean }).fn)
-
             // const setters = variableSetters.filter(
             //     block => block.getFieldValue("VAR") === variables[i].getId(),
             // )
@@ -140,7 +136,6 @@ export class ArduinoGenerator extends CodeGenerator {
             //     types.forEach(({ block }) => { block.setWarningText(null) })
             // }
 
-            // const type = types[0]?.type || "Number"
             const type = nonProcedureArgVar.type
             variableGetters.forEach((block) => {
                 if (block.getFieldValue("VAR") === nonProcedureArgVar.getId()) {
@@ -148,7 +143,7 @@ export class ArduinoGenerator extends CodeGenerator {
                 }
             })
 
-            const arduinoType = this.TYPES[type]
+            const arduinoType = ArduinoGenerator.TYPES[type]
             const defaultValue = this.VAR_DEFAULTS[type]
             const name = this.nameDB_.getName(nonProcedureArgVar.getId(), Names.NameType.VARIABLE)
 
@@ -169,13 +164,7 @@ export class ArduinoGenerator extends CodeGenerator {
             if (!input) return
 
             const check = input.connection?.targetConnection?.getCheck()
-            console.log(check)
-            const type = {
-                Number: "double",
-                String: "String",
-                Boolean: "bool",
-                AnalogPin: "uint8_t",
-            }[check[0]]
+            const type = ArduinoGenerator.TYPES[check[0]]
 
             usages.forEach((block) => {
                 block.outputConnection?.setCheck(type)
