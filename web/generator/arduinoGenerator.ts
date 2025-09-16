@@ -169,7 +169,13 @@ export class ArduinoGenerator extends CodeGenerator {
             if (!input) return
 
             const check = input.connection?.targetConnection?.getCheck()
-            const type = (check ? check[0] : "Number") || "Number"
+            console.log(check)
+            const type = {
+                Number: "double",
+                String: "String",
+                Boolean: "bool",
+                AnalogPin: "uint8_t",
+            }[check[0]]
 
             usages.forEach((block) => {
                 block.outputConnection?.setCheck(type)
