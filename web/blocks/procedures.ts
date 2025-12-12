@@ -368,7 +368,7 @@ const PROCEDURE_DEF_COMMON = {
             const varName = paramBlock.getFieldValue("NAME") as string
             const varType = paramBlock.getFieldValue("TYPE") as string
             this.arguments_.push([varName, varType])
-            const variable = this.workspace.getVariable(varName, varType)!
+            const variable = this.workspace.getVariable(varName, varType) ?? this.workspace.createVariable(varName, varType)
             // const variable = this.workspace.getVariable(varName)!
             // variable.type = varType
             this.argumentVarModels_.push(variable)
