@@ -111,14 +111,7 @@ export class ArduinoGenerator extends CodeGenerator {
         // const variableSetters = workspace.getBlocksByType("variables_set")
         const variableGetters = workspace.getBlocksByType("variables_get")
 
-        let procedureArgVars = [
-            ...workspace.getBlocksByType("procedures_defnoreturn"),
-            ...workspace.getBlocksByType("procedures_defreturn"),
-        ]
-            .map(f => new Set((f as ProcedureBlock).argumentVarModels_))
-            .reduce((a, b) => a.union(b), new Set())
-
-        for (const nonProcedureArgVar of new Set(variables).difference(procedureArgVars)) {
+        for (const v of variables) {
             // const setters = variableSetters.filter(
             //     block => block.getFieldValue("VAR") === variables[i].getId(),
             // )
@@ -136,16 +129,19 @@ export class ArduinoGenerator extends CodeGenerator {
             //     types.forEach(({ block }) => { block.setWarningText(null) })
             // }
 
-            const type = nonProcedureArgVar.type
+            const type = v.type
+            if (type == "") {
+                continue
+            }
             variableGetters.forEach((block) => {
-                if (block.getFieldValue("VAR") === nonProcedureArgVar.getId()) {
+                if (block.getFieldValue("VAR") === v.getId()) {
                     block.outputConnection?.setCheck(type)
                 }
             })
 
             const arduinoType = ArduinoGenerator.TYPES[type]
             const defaultValue = this.VAR_DEFAULTS[type]
-            const name = this.nameDB_.getName(nonProcedureArgVar.getId(), Names.NameType.VARIABLE)
+            const name = this.nameDB_.getName(v.getId(), Names.NameType.VARIABLE)
 
             defvars.push(`${arduinoType} ${name} = ${defaultValue}`)
         }
