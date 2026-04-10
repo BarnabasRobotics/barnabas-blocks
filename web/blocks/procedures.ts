@@ -16,9 +16,9 @@ import {
     Workspace,
     Xml,
 } from "blockly"
-import { Block, Names } from "blockly/core"
+import {Block, Names} from "blockly/core"
 import * as xmlUtils from "./xml"
-import { LegacyContextMenuOption } from "blockly/core/contextmenu_registry"
+import {LegacyContextMenuOption} from "blockly/core/contextmenu_registry"
 import ContextMenuOption = ContextMenuRegistry.ContextMenuOption
 
 // Blockly.Extensions.registerMutator(
@@ -149,7 +149,7 @@ const PROCEDURE_DEF_COMMON = {
         let paramString = ""
         if (this.arguments_.length) {
             paramString
-            = Msg["PROCEDURES_BEFORE_PARAMS"] + " " + this.arguments_.map(([n, _]) => n).join(", ")
+                = Msg["PROCEDURES_BEFORE_PARAMS"] + " " + this.arguments_.map(([n, _]) => n).join(", ")
         }
         // The params field is deterministic based on the mutation,
         // no need to fire a change event.
@@ -212,6 +212,7 @@ const PROCEDURE_DEF_COMMON = {
                   || childElement.getAttribute("varId")
                 const varType = childElement.getAttribute("type")!
                 this.arguments_.push([varName, varType])
+
                 const variable = Variables.getOrCreateVariablePackage(
                     this.workspace,
                     varId,
@@ -235,10 +236,10 @@ const PROCEDURE_DEF_COMMON = {
         this.setStatements_(xmlElement.getAttribute("statements") !== "false")
     },
     /**
-   * Returns the state of this block as a JSON serializable object.
-   *
-   * @returns The state of this block, eg the parameters and statements.
-   */
+     * Returns the state of this block as a JSON serializable object.
+     *
+     * @returns The state of this block, eg the parameters and statements.
+     */
     saveExtraState: function (this: ProcedureBlock): ProcedureExtraState | null {
         if (!this.argumentVarModels_.length && this.hasStatements_) {
             return null
@@ -262,11 +263,11 @@ const PROCEDURE_DEF_COMMON = {
         return state as ProcedureExtraState
     },
     /**
-   * Applies the given state to this block.
-   *
-   * @param state The state to apply to this block, eg the parameters
-   *     and statements.
-   */
+     * Applies the given state to this block.
+     *
+     * @param state The state to apply to this block, eg the parameters
+     *     and statements.
+     */
     loadExtraState: function (this: ProcedureBlock, state: ProcedureExtraState) {
         this.arguments_ = []
         this.argumentVarModels_ = []
@@ -288,26 +289,26 @@ const PROCEDURE_DEF_COMMON = {
         this.setStatements_(state["hasStatements"] !== false)
     },
     /**
-   * Populate the mutator's dialog with this block's components.
-   *
-   * @param  workspace Mutator's workspace.
-   * @returns Root block in mutator.
-   */
+     * Populate the mutator's dialog with this block's components.
+     *
+     * @param  workspace Mutator's workspace.
+     * @returns Root block in mutator.
+     */
     decompose: function (
         this: ProcedureBlock,
         workspace: Workspace,
     ): ContainerBlock {
-    /*
-     * Creates the following XML:
-     * <block type="procedures_mutatorcontainer">
-     *   <statement name="STACK">
-     *     <block type="procedures_mutatorarg">
-     *       <field name="NAME">arg1_name</field>
-     *       <next>etc...</next>
-     *     </block>
-     *   </statement>
-     * </block>
-     */
+        /*
+         * Creates the following XML:
+         * <block type="procedures_mutatorcontainer">
+         *   <statement name="STACK">
+         *     <block type="procedures_mutatorarg">
+         *       <field name="NAME">arg1_name</field>
+         *       <next>etc...</next>
+         *     </block>
+         *   </statement>
+         * </block>
+         */
 
         const containerBlockNode = xmlUtils.createElement("block")
         containerBlockNode.setAttribute("type", "procedures_mutatorcontainer")
@@ -354,12 +355,14 @@ const PROCEDURE_DEF_COMMON = {
         return containerBlock
     },
     /**
-   * Reconfigure this block based on the mutator dialog's components.
-   *
-   * @param containerBlock Root block in mutator.
-   */
+     * Reconfigure this block based on the mutator dialog's components.
+     *
+     * @param containerBlock Root block in mutator.
+     */
     compose: function (this: ProcedureBlock, containerBlock: ContainerBlock) {
-    // Parameter list.
+        const oldModels = new Map(this.argumentVarModels_.map(v => [v.getId(), v]))
+
+        // Parameter list.
         this.arguments_ = []
         this.paramIds_ = []
         this.argumentVarModels_ = []
@@ -373,6 +376,7 @@ const PROCEDURE_DEF_COMMON = {
             // variable.type = varType
             this.argumentVarModels_.push(variable)
 
+            oldModels.delete(variable.getId());
             this.paramIds_.push(paramBlock.id)
             paramBlock = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock()
         }
@@ -401,6 +405,10 @@ const PROCEDURE_DEF_COMMON = {
                     this.setStatements_(false)
                 }
             }
+        }
+
+        for (const id of oldModels.keys()) {
+            this.workspace.deleteVariableById(id)
         }
     },
     /**
@@ -522,7 +530,7 @@ const PROCEDURE_DEF_COMMON = {
         const name = this.getFieldValue("NAME")
         const callProcedureBlockState = {
             type: (this as AnyDuringMigration).callType_,
-            extraState: { name: name, params: this.arguments_ },
+            extraState: {name: name, params: this.arguments_},
         }
         options.push({
             enabled: true,
@@ -537,7 +545,7 @@ const PROCEDURE_DEF_COMMON = {
                 const getVarBlockState = {
                     type: "variables_get",
                     fields: {
-                        VAR: { name: argVar.name, id: argVar.getId(), type: argVar.type },
+                        VAR: {name: argVar.name, id: argVar.getId(), type: argVar.type},
                     },
                 }
                 options.push({
@@ -692,7 +700,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
             (this.workspace.options.comments
                 || (this.workspace.options.parentWorkspace
                     && this.workspace.options.parentWorkspace.options.comments))
-                && Msg["PROCEDURES_DEFNORETURN_COMMENT"]
+            && Msg["PROCEDURES_DEFNORETURN_COMMENT"]
         ) {
             this.setCommentText(Msg["PROCEDURES_DEFNORETURN_COMMENT"])
         }
@@ -745,7 +753,7 @@ Blockly.Blocks["procedures_defreturn"] = {
             (this.workspace.options.comments
                 || (this.workspace.options.parentWorkspace
                     && this.workspace.options.parentWorkspace.options.comments))
-                && Msg["PROCEDURES_DEFRETURN_COMMENT"]
+            && Msg["PROCEDURES_DEFRETURN_COMMENT"]
         ) {
             this.setCommentText(Msg["PROCEDURES_DEFRETURN_COMMENT"])
         }
