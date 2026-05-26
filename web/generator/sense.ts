@@ -47,14 +47,20 @@ export default function populate(generator: ArduinoGenerator) {
         generator.reservePin(block, echo, "input", "ultrasonic echo")
         generator.addSetup(block, `buzzer:echo:${echo}`, `pinMode(${trigger}, INPUT);`)
 
-        // where 29979.2458 is c in cm/us
+        // where 1 / 30.169553 is roughly (1 cm/us) per (mach 1)
         generator.addDeclaration(block, "ultrasonic", `double ultrasonic() {
 ${generator.INDENT}digitalWrite(${trigger}, LOW);
-${generator.INDENT}delayMicroseconds(5);
+${generator.INDENT}delayMicroseconds(2);
 ${generator.INDENT}digitalWrite(${trigger}, HIGH);
+${generator.INDENT}delayMicroseconds(20);
+${generator.INDENT}digitalWrite(${trigger}, LOW);
 
-${generator.INDENT}double duration_us = pulseIn(${echo}, HIGH);
-${generator.INDENT}return ((double) pulseIn(${echo}, HIGH)) / 29979.2458;
+${generator.INDENT}double us = pulseIn(${echo}, HIGH);
+${generator.INDENT}double us_one_leg = us / 2;
+${generator.INDENT}double cm = us / 30.169553;
+${generator.INDENT}if ((duration < 2) || (duration > 300)) return 0.0;
+${generator.INDENT}delay(100);
+${generator.INDENT}return cm;
 }
 `)
 
